@@ -14,21 +14,18 @@
     <string name="title_activity_user_input">Order Details</string>
     <string name="confirm">Confirm your order</string>
     <string name="title_activity_current_connected">Confirm your order</string>
-
     <string name="prompt">Select a Burrito</string>
 
     <string-array name="burrito_array">
-		<item>Select a Burrito</item>
+        <item>Select a Burrito</item>
         <item>Grilled Chicken Burrito - $6.79</item>
         <item>Pulled Pork - $7.09</item>
         <item>Shredded Beef - $7.49</item>
         <item>Grilled Steak - $7.49</item>
         <item>Seasoned Ground Beef - $7.09</item>
         <item>Vegetarian - $6.79</item>
-
-
     </string-array>
-    
 
+    <string name="title_activity_main_activityww">MainActivityww</string>
 
 </resources>
