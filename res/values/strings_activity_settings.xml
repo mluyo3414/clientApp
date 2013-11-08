@@ -8,12 +8,14 @@
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact based on your message history</string>
     <string name="pref_title_display_name">Display name</string>
+    <string name="pref_title_payment_set">Payment Method</string>
     <string name="pref_default_display_name">Insert Name</string>
     <string name="pref_default_port">Port</string>
     <string name="pref_default_ip">IP</string>
+    <string name="pref_title_payment">None</string>
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string name="settings_settings">Settings</string>
-    
+
     <string-array name="settings_array">
         <item>Select a Burrito</item>
         <item>Name</item>

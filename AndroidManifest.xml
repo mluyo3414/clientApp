@@ -8,7 +8,7 @@
     </uses-permission>
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -42,10 +42,7 @@
         <activity
             android:name="com.example.foodnow.SettingsActivity"
             android:label="@string/title_activity_settings" >
-        </activity>
-        <activity
-            android:name="com.example.foodnow.MainActivityww"
-            android:label="@string/title_activity_main_activityww" >
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar">
         </activity>
     </application>
 

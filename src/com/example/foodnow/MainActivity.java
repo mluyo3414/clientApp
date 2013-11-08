@@ -3,7 +3,8 @@ package com.example.foodnow;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,6 +36,9 @@ public class MainActivity extends Activity
     ConnectAsync myActivity;
     TextView status;
 
+    // Keeps track of whether the server is available
+    private boolean connectedToServer_ = false;
+
     // Instance to the settings activity
     private SettingsActivity settings_;
 
@@ -54,26 +58,32 @@ public class MainActivity extends Activity
         status = (TextView) findViewById( R.id.connectionStatus );
 
         // TODO: Checking for server causes an error
-        // // Attempt to connect to the server with the saved settings if it
-        // // fails then display the settings menu to get the port and IP
-        // number.
-        // // If it succeeds then continue to display the main menu
-        // if ( connectServerSettings() )
-        // {
-        // // TODO
-        //
-        // }
-        // else
-        // {
-        // // Start the settings activity TODO
-        // Intent settingsIntention =
-        // new Intent( MainActivity.this, SettingsActivity.class );
-        //
-        // MainActivity.this.startActivity( settingsIntention );
-        // }
+        // Attempt to connect to the server with the saved settings if it
+        // fails then display the settings menu to get the port and IP
+        // number If it succeeds then continue to display the main menu
+        if ( connectServerSettings() )
+        {
+            // TODO
+        }
+        else
+        {
+            // // Start the settings activity
+            // FragmentManager mFragmentManager = getFragmentManager();
+            // FragmentTransaction mFragmentTransaction = mFragmentManager
+            // .beginTransaction();
+            //
+            // SettingsActivity mPrefsFragment = new SettingsActivity();
+            // mFragmentTransaction
+            // .replace( android.R.id.content, mPrefsFragment );
+            // mFragmentTransaction.commit();
+
+            // We could have condensed the 5 lines into 1 line of code.
+            // getFragmentManager().beginTransaction()
+            // .replace(android.R.id.content, new PrefsFragment()).commit();
+        }
 
         // listener function gets called
-        buttonPressed();
+        // buttonPressed();
     }
 
     /**
@@ -86,11 +96,11 @@ public class MainActivity extends Activity
      */
     private boolean connectServerSettings()
     {
-        if ( settings_.iPandPortValueAreSet() )
-        {
-            // Attempt to connect
-            return attemptServerConnection();
-        }
+        // if ( settings_.iPandPortValueAreSet() ) // TODO
+        // {
+        // // Attempt to connect
+        // return attemptServerConnection();
+        // }
 
         return false;
     }
