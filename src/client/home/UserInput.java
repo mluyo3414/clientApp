@@ -1,6 +1,8 @@
-package com.example.foodnow;
+package client.home;
 
 import java.util.ArrayList;
+
+import com.example.foodnow.R;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -22,7 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 /**
  * 
  * @author Miguel S This activity displays the menu with the options to pick
- *         from as well as the option to add a name to the order
+ *         from as well as the option to add a name to the client.orders
  */
 public class UserInput extends Activity
 {
@@ -95,8 +97,8 @@ public class UserInput extends Activity
 						Intent in =
 								new Intent( getApplicationContext(),
 										CurrentConnected.class );
-						// start intent with order and name
-						in.putExtra( "order", order );
+						// start intent with client.orders and name
+						in.putExtra( "client.orders", order );
 						in.putExtra( "name", nameString );
 						// start new activity
 						if ( nameString.isEmpty() == false )

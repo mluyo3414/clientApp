@@ -7,13 +7,13 @@
     <string name="serverIP">Server IP:</string>
     <string name="serverPort">Port number:</string>
     <string name="connectButton">Connect to server!</string>
-    <string name="userInput">Start your order NOW!</string>
+    <string name="userInput">Start your client.orders NOW!</string>
     <string name="userName">Name: </string>
     <string name="product">Pick a product: </string>
     <string name="title_activity_from_server1">YES! Server is up and running!</string>
     <string name="title_activity_user_input">Order Details</string>
-    <string name="confirm">Confirm your order</string>
-    <string name="title_activity_current_connected">Confirm your order</string>
+    <string name="confirm">Confirm your client.orders</string>
+    <string name="title_activity_current_connected">Confirm your client.orders</string>
     <string name="prompt">Select a Burrito</string>
 
     <string-array name="burrito_array">
@@ -26,6 +26,11 @@
         <item>Vegetarian - $6.79</item>
     </string-array>
 
-    <string name="title_activity_main_activityww">MainActivityww</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_activity_order">OrderActivity</string>
+    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_order_confirmed_fragment">OrderConfirmedFragment</string>
+    <string name="title_activity_confirm_order_dialog">ConfirmOrderDialog</string>
+    <string name="title_activity_add_to_plate_dialog">AddToPlateDialog</string>
 
 </resources>

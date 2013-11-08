@@ -1,4 +1,6 @@
-package com.example.foodnow;
+package client.general;
+
+import com.example.foodnow.R;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -123,11 +125,11 @@ public class SettingsActivity extends PreferenceFragment // extends
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
-         bindPreferenceSummaryToValue( findPreference( "pref_default_port" ) );
-         bindPreferenceSummaryToValue( findPreference( "pref_default_ip" ) );
-         bindPreferenceSummaryToValue( findPreference( "pref_default_display_name" ) );
-         bindPreferenceSummaryToValue( findPreference( "pref_default_port" ) );
-         bindPreferenceSummaryToValue( findPreference( "pref_default_port" ) );
+        bindPreferenceSummaryToValue( findPreference( "pref_title_ip" ) );
+        bindPreferenceSummaryToValue( findPreference( "pref_title_name" ) );
+        bindPreferenceSummaryToValue( findPreference( "pref_title_payment" ) );
+        bindPreferenceSummaryToValue( findPreference( "pref_title_port" ) );
+        bindPreferenceSummaryToValue( findPreference( "pref_title_phone_number" ) );
 
     }
 

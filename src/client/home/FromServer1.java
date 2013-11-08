@@ -1,5 +1,4 @@
-package com.example.foodnow;
-
+package client.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -10,13 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import client.home.UserInput;
+
 import com.example.foodnow.R;
-import com.example.foodnow.UserInput;
 
 /**
  * 
  * @author Miguel Suarez
  * @author James Dagres
+ * @author Carl Barbee Doll
+ * @author Matthew Curtis Luckam
  * 
  *         This activity displays the response from the server to the client.
  */
@@ -50,13 +52,14 @@ public class FromServer1 extends Activity
             // if server returned data, update GUI with information update it
             // else display that server is not available
             if ( !infoFromServer.isEmpty() )
+            {
                 updateGUI( infoFromServer );
-
+            }
             else
+            {
                 updateGIUnoResponse();
-
+            }
         }
-
     }
 
     @Override
@@ -74,18 +77,17 @@ public class FromServer1 extends Activity
      */
     public void updateGUI( String dataFromServer )
     {
-        // enable button so we can order
+        // enable button so we can client.orders
         userInput.setEnabled( true );
         // start new intent if we are connected to the server
         buttonPressed();
         // update information from the server
         updateInfo.setText( dataFromServer );
-
     }
 
     /**
-     * Waits for the user to press the button so the order can be started by
-     * going into the next activity
+     * Waits for the user to press the button so the client.orders can be
+     * started by going into the next activity
      */
     public void buttonPressed()
     {

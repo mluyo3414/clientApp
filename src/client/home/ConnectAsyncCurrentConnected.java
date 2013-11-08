@@ -1,4 +1,4 @@
-package com.example.foodnow;
+package client.home;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import android.widget.Toast;
 /**
  * 
  * @author Miguel S 
- * Posts order to the server
+ * Posts client.orders to the server
  */
 
 public class ConnectAsyncCurrentConnected extends
@@ -58,7 +58,7 @@ public class ConnectAsyncCurrentConnected extends
 	public String post( String nameAndOrderFromPrev )
 	{
 
-		// splits order from name into an order and a name
+		// splits client.orders from name into an client.orders and a name
 		String[] nameAndOrderArray = nameAndOrderFromPrev.split( "from" );
 		order = nameAndOrderArray[0];
 		name = nameAndOrderArray[1];
@@ -73,7 +73,7 @@ public class ConnectAsyncCurrentConnected extends
 			List<NameValuePair> nameValuePairs =
 					new ArrayList<NameValuePair>( 1 );
 			nameValuePairs.add( new BasicNameValuePair( "username", name ) );
-			nameValuePairs.add( new BasicNameValuePair( "order", order ) );
+			nameValuePairs.add( new BasicNameValuePair( "client.orders", order ) );
 			DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			dateFormatter.setLenient(false);
 			Date today = new Date();
@@ -96,7 +96,7 @@ public class ConnectAsyncCurrentConnected extends
 			}
 			rd.close();
 			data = sb.toString();
-			// get order status
+			// get client.orders status
 			return (data);
 		} catch ( IOException e )
 		{
@@ -112,7 +112,7 @@ public class ConnectAsyncCurrentConnected extends
 	@Override
 	protected String doInBackground( String... params )
 	{
-		// receives string containing name and order
+		// receives string containing name and client.orders
 		String fromServer = "";
 
 		try
@@ -140,7 +140,7 @@ public class ConnectAsyncCurrentConnected extends
 			{
 				// displays toast after successfully posting it to the server
 				Toast.makeText( currentConnected_,
-						"Your order was sent successfully, " + name,
+						"Your client.orders was sent successfully, " + name,
 						Toast.LENGTH_SHORT ).show();
 				
 			}

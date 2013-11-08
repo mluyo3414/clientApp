@@ -1,4 +1,9 @@
-package com.example.foodnow;
+package client.home;
+
+import client.general.ConnectAsync;
+import client.general.SettingsActivity;
+
+import com.example.foodnow.R;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -46,7 +51,7 @@ public class MainActivity extends Activity
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_main );
+        setContentView( R.layout.activity_main_home );
 
         // settings_ = new SettingsActivity(); // TODO: settings initialization
         // causes an error
@@ -109,7 +114,7 @@ public class MainActivity extends Activity
     public boolean onCreateOptionsMenu( Menu menu )
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate( R.menu.main, menu );
+        getMenuInflater().inflate( R.menu.main_home, menu );
         return true;
     }
 
