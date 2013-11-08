@@ -4,8 +4,8 @@
     <string name="app_name">food Now!!</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="serverIP">Enter server IP:</string>
-    <string name="serverPort">Enter port number:</string>
+    <string name="serverIP">Server IP:</string>
+    <string name="serverPort">Port number:</string>
     <string name="connectButton">Connect to server!</string>
     <string name="userInput">Start your order NOW!</string>
     <string name="userName">Name: </string>
