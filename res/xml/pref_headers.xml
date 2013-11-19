@@ -33,8 +33,4 @@
     <header
         android:fragment="com.example.foodnow.SettingsPreferenceActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
-    <header
-        android:fragment="com.example.foodnow.SettingsPreferenceActivity$DataSyncPreferenceFragment"
-        android:title="@string/pref_header_data_sync" />
-
 </preference-headers>

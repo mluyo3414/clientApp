@@ -55,10 +55,6 @@
             android:label="@string/title_activity_current_connected" >
         </activity>
         <activity
-            android:name="client.general.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
-        <activity
             android:name="client.menu.MenuActivity"
             android:label="@string/title_activity_menu" >
         </activity>
@@ -85,7 +81,9 @@
         <activity
             android:name="client.general.SettingsPreferenceActivity"
             android:label="@string/action_settings" >
+
         </activity>
+ 
     </application>
 
 </manifest>

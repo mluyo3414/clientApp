@@ -52,7 +52,9 @@ public class MainActivity extends Activity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main_home );
 
-        settings_ = new SettingsPreferenceActivity();
+        settings_ = new SettingsPreferenceActivity(); // TODO: settings
+                                                      // initialization
+        // causes an error
 
         // starts the layout objects
         ipAddress = (EditText) findViewById( R.id.IpAddress );
@@ -66,27 +68,25 @@ public class MainActivity extends Activity
         // number If it succeeds then continue to display the main menu
         if ( connectServerSettings() )
         {
-
+            // TODO
         }
         else
         {
-            // TODO: HACK: uncomment out the following code to display the
-            // settings activity
-            // Toast.makeText( getApplicationContext(),
-            // "Failed to connect to server, check settings",
-            // Toast.LENGTH_LONG )
-            // .show();
-            //
-            // // Start the settings activity
-            // Intent settingsIntention =
-            // new Intent( MainActivity.this,
-            // SettingsPreferenceActivity.class );
-            //
-            // MainActivity.this.startActivity( settingsIntention );
+            Toast.makeText( getApplicationContext(),
+                    "Failed to connect to server, check settings",
+                    Toast.LENGTH_LONG )
+                    .show();
+
+            // Start the settings activity
+            Intent settingsIntention =
+                    new Intent( MainActivity.this,
+                            SettingsPreferenceActivity.class );
+
+            MainActivity.this.startActivity( settingsIntention );
         }
 
         // listener function gets called
-        buttonPressed();
+        // buttonPressed();
     }
 
     /**
