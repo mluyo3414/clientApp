@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -108,7 +111,7 @@ public class SettingsPreferenceActivity extends Activity
         }
         catch ( Exception ex )
         {
-
+            System.err.print( "Error fetching preference file" );
         }
 
         initializeSettingsList();
@@ -121,7 +124,6 @@ public class SettingsPreferenceActivity extends Activity
      */
     private void initializeSettingsList()
     {
-
         String[] settings_Array =
                 getResources().getStringArray( R.array.settings_array );
 
@@ -145,8 +147,32 @@ public class SettingsPreferenceActivity extends Activity
                 Toast.makeText( getApplicationContext(),
                         "Click ListItem Number " + position, Toast.LENGTH_LONG )
                         .show();
+
             }
         } );
+    }
+
+    /**
+     * This function is called when any on click event for the settings is hit,
+     * it then handles the appropriate action for modified the specifically
+     * selected preference.
+     * 
+     * @param positionOfSettingToUpdate
+     */
+    private void
+            handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
+    {
+        switch ( positionOfSettingToUpdate )
+        {
+        case 0: //
+            break;
+        case 1: //
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        }
     }
 
     /**
@@ -163,6 +189,52 @@ public class SettingsPreferenceActivity extends Activity
             String currentStringForTheSetting )
     {
         // TODO:
+
+        // // get prompts.xml view
+        // LayoutInflater li = LayoutInflater.from( getBaseContext() );
+        // View promptsView = li.inflate( R.layout.update_settings_dialog, null
+        // );
+        //
+        // AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+        // getBaseContext() );
+        //
+        // // set prompts.xml to alertdialog builder
+        // alertDialogBuilder.setView( promptsView );
+        //
+        // final EditText userInput = (EditText) promptsView
+        // .findViewById( R.id.editTextDialogUserInput );
+        //
+        // // set dialog message
+        // alertDialogBuilder
+        // .setCancelable( false )
+        // .setPositiveButton( "OK",
+        // new DialogInterface.OnClickListener()
+        // {
+        // public void
+        // onClick( DialogInterface dialog, int id )
+        // {
+        // // Return the newly entered setting
+        // return getText( userInput.getText() );
+        // // get user input and set it to result
+        // // edit text
+        // result.setText();
+        // }
+        // } )
+        // .setNegativeButton( "Cancel",
+        // new DialogInterface.OnClickListener()
+        // {
+        // public void
+        // onClick( DialogInterface dialog, int id )
+        // {
+        // dialog.cancel();
+        // }
+        // } );
+        //
+        // // create alert dialog
+        // AlertDialog alertDialog = alertDialogBuilder.create();
+        //
+        // // show it
+        // alertDialog.show();
 
         // preferenceEditor_.putString( getString( R.id.nameEditText ),
         // (String) s );
