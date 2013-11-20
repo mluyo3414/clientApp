@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -39,13 +38,6 @@ import com.example.foodnow.R;
  *          settings. On handset devices, settings are presented as a single
  *          list. On tablets, settings are split by category, with category
  *          headers shown to the left of the list of settings.
- *          <p>
- *          See <a
- *          href="http://developer.android.com/design/patterns/settings.html">
- *          Android Design: Settings</a> for design guidelines and the <a
- *          href="http://developer.android.com/guide/topics/ui/settings.html"
- *          >Settings API Guide</a> for more information on developing a
- *          Settings UI.
  * 
  */
 public class SettingsPreferenceActivity extends Activity
@@ -99,8 +91,6 @@ public class SettingsPreferenceActivity extends Activity
 
         setupSimplePreferencesScreen();
 
-        displaySettingsStrings();
-
         preference_ =
                 getSharedPreferences( getString( R.string.pref_title_file ),
                         Context.MODE_PRIVATE );
@@ -145,11 +135,21 @@ public class SettingsPreferenceActivity extends Activity
                     int position, long id )
             {
                 Toast.makeText( getApplicationContext(),
-                        "Click ListItem Number " + position, Toast.LENGTH_LONG )
+                        "Click ListItem Number " + position,
+                        Toast.LENGTH_SHORT / 2 )
                         .show();
 
+                // TODO: Use a fragment or a thread to call the handleupdate
+                // function which creates a dialog
+
+                // DialogFragment newFragment = new Fragment ();
+                // newFragment.show( getFragmentManager(), "timePicker" );
+
+                // Call the function to handle the updated preference
+                handleUpdatePreferenceSelection( position );
             }
         } );
+
     }
 
     /**
@@ -164,13 +164,32 @@ public class SettingsPreferenceActivity extends Activity
     {
         switch ( positionOfSettingToUpdate )
         {
-        case 0: //
+        case 0: // The name preference
+            // preferenceEditor_.putString( getString( R.id.nameEditText ),
+            // (String) s );
             break;
-        case 1: //
+        case 1: // The phone number preference
             break;
-        case 2:
+        case 2: // The payment preference
             break;
-        case 3:
+        case 3: // The home location preference
+            break;
+        case 4: // The ip preference
+
+            String newIp =
+                    displayUpdateSettingsDialog( "IP",
+                            "Please enter the updated IP:" );
+
+            preferenceEditor_.putString( getString( R.id.IpPort ),
+                    (String) newIp );
+
+            Toast.makeText( getApplicationContext(),
+                    "newIp " + newIp,
+                    Toast.LENGTH_SHORT )
+                    .show();
+
+            break;
+        case 5: // The port preference
             break;
         }
     }
@@ -188,56 +207,64 @@ public class SettingsPreferenceActivity extends Activity
     private String displayUpdateSettingsDialog( String settingsToBeUpdated,
             String currentStringForTheSetting )
     {
-        // TODO:
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from( getBaseContext() );
+        View promptsView =
+                li.inflate( R.layout.update_settings_dialog, null
+                        );
 
-        // // get prompts.xml view
-        // LayoutInflater li = LayoutInflater.from( getBaseContext() );
-        // View promptsView = li.inflate( R.layout.update_settings_dialog, null
-        // );
-        //
-        // AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-        // getBaseContext() );
-        //
-        // // set prompts.xml to alertdialog builder
-        // alertDialogBuilder.setView( promptsView );
-        //
-        // final EditText userInput = (EditText) promptsView
-        // .findViewById( R.id.editTextDialogUserInput );
-        //
-        // // set dialog message
-        // alertDialogBuilder
-        // .setCancelable( false )
-        // .setPositiveButton( "OK",
-        // new DialogInterface.OnClickListener()
-        // {
-        // public void
-        // onClick( DialogInterface dialog, int id )
-        // {
-        // // Return the newly entered setting
-        // return getText( userInput.getText() );
-        // // get user input and set it to result
-        // // edit text
-        // result.setText();
-        // }
-        // } )
-        // .setNegativeButton( "Cancel",
-        // new DialogInterface.OnClickListener()
-        // {
-        // public void
-        // onClick( DialogInterface dialog, int id )
-        // {
-        // dialog.cancel();
-        // }
-        // } );
-        //
-        // // create alert dialog
-        // AlertDialog alertDialog = alertDialogBuilder.create();
-        //
-        // // show it
-        // alertDialog.show();
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                getBaseContext() );
 
-        // preferenceEditor_.putString( getString( R.id.nameEditText ),
-        // (String) s );
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView( promptsView );
+
+        final EditText userInput = (EditText) promptsView
+                .findViewById( R.id.editTextDialogUserInput );
+
+        final boolean newPreferenceEntered = false;
+        final String updatedPreference;
+        // final EditText result = (EditText)
+        // findViewById(R.id.editTextResult);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable( false )
+                .setPositiveButton( "OK",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                // // Return the newly entered setting
+                                // newPreferenceEntered = false;
+                                // // updatedPreference =
+                                // // (String) userInput.getText();
+                                // updatedPreference = userInput.toString();
+
+                                // TODO update things the new settings
+                            }
+                        } )
+                .setNegativeButton( "Cancel",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                dialog.cancel();
+                            }
+                        } );
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+        if ( newPreferenceEntered )
+        {
+            return updatedPreference;
+        }
 
         return null;
     }
@@ -250,7 +277,6 @@ public class SettingsPreferenceActivity extends Activity
     {
         try
         {
-
             // nameText_ = (EditText) findViewById( R.id.nameEditText );
             // // nameText_.setText( preference_
             // // .getString( getString( R.id.nameEditText ),
@@ -285,14 +311,15 @@ public class SettingsPreferenceActivity extends Activity
     }
 
     /**
-     * Populates the list view with the string values
+     * Updates the preference of the passed preference
+     * 
+     * @param preferenceToUpdate
+     * @param preferenceValue
      */
-    private void displaySettingsStrings()
+    private void updatePreference( String preferenceToUpdate,
+            String preferenceValue )
     {
-        // setListAdapter( new ArrayAdapter<String>( this, R.id.listView1,
-        // R.array.settings_array ) );
-        // settingsListView_ = getListView();
-        // TODO:
+        // TODO
     }
 
     /**
@@ -324,16 +351,6 @@ public class SettingsPreferenceActivity extends Activity
         // R.string.pref_title_port ) ) );
         // bindPreferenceSummaryToValue( findPreference( getString(
         // R.string.pref_title_phone_number ) ) );
-    }
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet( Context context )
-    {
-        return (context.getResources().getConfiguration().screenLayout
-        & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
     /**
@@ -438,6 +455,14 @@ public class SettingsPreferenceActivity extends Activity
         return false;
     }
 
+    /**
+     * @author Jimmy Dagres
+     * 
+     * @version Nov 19, 2013
+     * 
+     *          Handles inserting the array into the listview
+     * 
+     */
     private class StableArrayAdapter extends ArrayAdapter<String>
     {
 
