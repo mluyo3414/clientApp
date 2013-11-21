@@ -14,7 +14,17 @@
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center" />
+        android:gravity="right" />
+
+    <Button
+        android:id="@+id/Button"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/Footer"
+        android:gravity="left"
+        android:onClick="onMyButtonClick"
+        android:text="Confirm"
+        android:textSize="22sp" />
 
     <ListView
         android:id="@+id/android:list"

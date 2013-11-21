@@ -1,5 +1,7 @@
 package client.orders;
 
+import client.menu.MenuTab;
+
 import com.example.foodnow.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -7,9 +9,12 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +43,10 @@ public class OrderTab extends ListActivity
      * current item number selected
      */
     private int currentNumber;
+    /**
+     * Confirm button
+     */
+    private static Button button;
 
     /**
      * Called when the activity is first created
@@ -56,8 +65,16 @@ public class OrderTab extends ListActivity
                         R.id.itemName, list );
 
         setListAdapter( adapter );
+
+        button = (Button) findViewById( R.id.Button );
+
+        addListenerOnButton();
+
     }
 
+    /**
+     * When list view item is clicked
+     */
     @Override
     protected void onListItemClick( ListView l, View v, int position, long id )
     {
@@ -66,6 +83,9 @@ public class OrderTab extends ListActivity
         removeItem();
     }
 
+    /**
+     * Settings for item that are removed from the list
+     */
     private void removeItem()
     {
         // prepare the alert box
@@ -124,6 +144,12 @@ public class OrderTab extends ListActivity
 
     }
 
+    /**
+     * Items added to the list - called from the menu
+     * 
+     * @param newItem
+     *            String with new items name from the menu
+     */
     public void addItems( String newItem )
     {
         list.add( newItem );
@@ -142,4 +168,68 @@ public class OrderTab extends ListActivity
 
     }
 
+    /**
+     * When confirm button is pushed
+     */
+    public void addListenerOnButton()
+    {
+        button.setOnClickListener( new View.OnClickListener()
+        {
+            public void onClick( View v )
+            {
+                // prepare the alert box
+                AlertDialog.Builder alertbox =
+                        new AlertDialog.Builder( OrderTab.this );
+                // set the message to display
+                alertbox.setMessage( "Confirm your order?" );
+                // set a positive/yes button and create a listener
+                alertbox.setPositiveButton( "Yes",
+                        new DialogInterface.OnClickListener()
+                        {
+                            // //////////////////////////////////////////
+                            // do something when the YES button is clicked
+                            // //////////////////////////////////////////
+                            public void
+                                    onClick( DialogInterface arg0, int arg1 )
+                            {
+                                // prepare the alert box
+                                AlertDialog.Builder alertbox =
+                                        new AlertDialog.Builder( OrderTab.this );
+                                // set the message to display
+                                alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: add id here" );
+                                // set a positive/yes button and create a
+                                // listener
+                                alertbox.setPositiveButton( "Ok",
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            public void onClick(
+                                                    DialogInterface arg0,
+                                                    int arg1 )
+                                            {
+                                            }
+                                        } );
+                                alertbox.show();
+                            }
+                        } );
+
+                // set a negative/no button and create a listener
+                alertbox.setNegativeButton( "No",
+                        new DialogInterface.OnClickListener()
+                        {
+
+                            // //////////////////////////////////////////
+                            // do something when the NO button is clicked
+                            // //////////////////////////////////////////
+                            public void
+                                    onClick( DialogInterface arg0, int arg1 )
+                            {
+
+                            }
+                        } );
+                alertbox.show();
+            }
+
+        } );
+
+    }
 }
