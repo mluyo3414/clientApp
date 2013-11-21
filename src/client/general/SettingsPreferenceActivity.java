@@ -45,10 +45,6 @@ public class SettingsPreferenceActivity extends Activity
     private String stringIP_;
     private String stringPort_;
 
-    private EditText phoneNumberText_, nameText_, homeLocationText_,
-            portText_, ipText_;
-    private TextView paymentMethodSet_;
-
     private ListView settingsListView_;
 
     // Common handles to the preference file
@@ -71,14 +67,6 @@ public class SettingsPreferenceActivity extends Activity
     {
         this.stringIP_ = stringIP_;
     }
-
-    /**
-     * Determines whether to always show the simplified settings UI, where
-     * settings are presented in a single list. When false, settings are shown
-     * as a master/detail two-pane view on tablets. When true, a single pane is
-     * shown on tablets.
-     */
-    private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
     @Override
     public void onCreate( Bundle savedInstanceState )
@@ -139,12 +127,6 @@ public class SettingsPreferenceActivity extends Activity
                         Toast.LENGTH_SHORT / 2 )
                         .show();
 
-                // TODO: Use a fragment or a thread to call the handleupdate
-                // function which creates a dialog
-
-                // DialogFragment newFragment = new Fragment ();
-                // newFragment.show( getFragmentManager(), "timePicker" );
-
                 // Call the function to handle the updated preference
                 handleUpdatePreferenceSelection( position );
             }
@@ -176,17 +158,10 @@ public class SettingsPreferenceActivity extends Activity
             break;
         case 4: // The ip preference
 
-            String newIp =
-                    displayUpdateSettingsDialog( "IP",
-                            "Please enter the updated IP:" );
-
-            preferenceEditor_.putString( getString( R.id.IpPort ),
-                    (String) newIp );
-
-            Toast.makeText( getApplicationContext(),
-                    "newIp " + newIp,
-                    Toast.LENGTH_SHORT )
-                    .show();
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_port ),
+                    preference_.getString(
+                            getString( R.string.pref_title_port ), "" ) );
 
             break;
         case 5: // The port preference
@@ -202,9 +177,9 @@ public class SettingsPreferenceActivity extends Activity
      * @param settingsToBeUpdated
      *            this is the string the dialog will list is being updated
      * @param currentStringForTheSetting
-     * @return the updated preference string
      */
-    private String displayUpdateSettingsDialog( String settingsToBeUpdated,
+    private void displayUpdateSettingsDialog(
+            final String settingsToBeUpdated,
             String currentStringForTheSetting )
     {
         // get prompts.xml view
@@ -213,19 +188,22 @@ public class SettingsPreferenceActivity extends Activity
                 li.inflate( R.layout.update_settings_dialog, null
                         );
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                getBaseContext() );
+        AlertDialog.Builder alertDialogBuilder =
+                new AlertDialog.Builder( this );
 
-        // set prompts.xml to alertdialog builder
+        // set prompts.xml to alertdialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
+        alertDialogBuilder.setTitle( "Update stored " + settingsToBeUpdated );
 
-        final EditText userInput = (EditText) promptsView
-                .findViewById( R.id.editTextDialogUserInput );
+        // Display text with the settings to be updated.
+        final TextView tv1;
+        tv1 = (TextView) promptsView.findViewById( R.id.updateSettingsText );
+        tv1.setText( settingsToBeUpdated );
 
-        final boolean newPreferenceEntered = false;
-        final String updatedPreference;
-        // final EditText result = (EditText)
-        // findViewById(R.id.editTextResult);
+        // Display the current settings in the edit text box
+        final EditText result = (EditText)
+                promptsView.findViewById( R.id.editTextDialogUserInput );
+        result.setHint( currentStringForTheSetting );
 
         // set dialog message
         alertDialogBuilder
@@ -236,13 +214,8 @@ public class SettingsPreferenceActivity extends Activity
                             public void
                                     onClick( DialogInterface dialog, int id )
                             {
-                                // // Return the newly entered setting
-                                // newPreferenceEntered = false;
-                                // // updatedPreference =
-                                // // (String) userInput.getText();
-                                // updatedPreference = userInput.toString();
-
-                                // TODO update things the new settings
+                                updatePreference( settingsToBeUpdated,
+                                        result.getText().toString() );
                             }
                         } )
                 .setNegativeButton( "Cancel",
@@ -260,13 +233,6 @@ public class SettingsPreferenceActivity extends Activity
 
         // show it
         alertDialog.show();
-
-        if ( newPreferenceEntered )
-        {
-            return updatedPreference;
-        }
-
-        return null;
     }
 
     /**
@@ -314,12 +280,19 @@ public class SettingsPreferenceActivity extends Activity
      * Updates the preference of the passed preference
      * 
      * @param preferenceToUpdate
-     * @param preferenceValue
+     * @param newPreferenceValue
      */
     private void updatePreference( String preferenceToUpdate,
-            String preferenceValue )
+            String newPreferenceValue )
     {
-        // TODO
+
+        preferenceEditor_.putString( preferenceToUpdate, newPreferenceValue );
+
+        preferenceEditor_.commit();
+        Toast.makeText( getApplicationContext(),
+                preferenceToUpdate + " has been updated.",
+                Toast.LENGTH_SHORT )
+                .show();
     }
 
     /**
@@ -329,7 +302,7 @@ public class SettingsPreferenceActivity extends Activity
      */
     private void setupSimplePreferencesScreen()
     {
-        // TODO:
+        // TODO: do I need this
 
         // In the simplified UI, fragments are not used at all and we instead
         // use the older PreferenceActivity APIs.
@@ -393,29 +366,6 @@ public class SettingsPreferenceActivity extends Activity
                     return true;
                 }
             };
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     * 
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue( Preference preference )
-    {
-        // Set the listener to watch for value changes.
-        preference
-                .setOnPreferenceChangeListener( sBindPreferenceSummaryToValueListener );
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange( preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences( preference.getContext() )
-                        .getString( preference.getKey(), "" ) );
-    }
 
     /**
      * Checks to ensure the IP isn't the default value, then checks to see if
