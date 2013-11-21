@@ -81,9 +81,19 @@
         <activity
             android:name="client.general.SettingsPreferenceActivity"
             android:label="@string/action_settings" >
-
         </activity>
- 
+        <activity
+            android:name="client.home.HomeTab"
+            android:label="@string/title_activity_home_tab" >
+        </activity>
+        <activity
+            android:name="client.menu.MenuTab"
+            android:label="@string/title_activity_menu_tab" >
+        </activity>
+        <activity
+            android:name="client.orders.OrderTab"
+            android:label="@string/title_activity_order_tab" >
+        </activity>
     </application>
 
 </manifest>
