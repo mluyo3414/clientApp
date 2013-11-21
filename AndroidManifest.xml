@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.foodnow"
+    android:screenOrientation="portrait"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -32,10 +33,12 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:screenOrientation="portrait"
         android:theme="@style/AppTheme" >
         <activity
             android:name="client.home.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,55 +47,68 @@
         </activity>
         <activity
             android:name="client.home.FromServer1"
-            android:label="@string/title_activity_from_server1" >
+            android:label="@string/title_activity_from_server1"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.home.UserInput"
-            android:label="@string/title_activity_user_input" >
+            android:label="@string/title_activity_user_input"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.home.CurrentConnected"
-            android:label="@string/title_activity_current_connected" >
+            android:label="@string/title_activity_current_connected"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.menu.MenuActivity"
-            android:label="@string/title_activity_menu" >
+            android:label="@string/title_activity_menu"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.orders.OrderActivity"
-            android:label="@string/title_activity_order" >
+            android:label="@string/title_activity_order"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.orders.PaymentActivity"
-            android:label="@string/title_activity_payment" >
+            android:label="@string/title_activity_payment"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.orders.OrderSentFragment"
-            android:label="@string/title_activity_order_confirmed_fragment" >
+            android:label="@string/title_activity_order_confirmed_fragment"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.orders.ConfirmOrderDialog"
-            android:label="@string/title_activity_confirm_order_dialog" >
+            android:label="@string/title_activity_confirm_order_dialog"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.menu.AddToPlateDialog"
-            android:label="@string/title_activity_add_to_plate_dialog" >
+            android:label="@string/title_activity_add_to_plate_dialog"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.general.SettingsPreferenceActivity"
-            android:label="@string/action_settings" >
+            android:label="@string/action_settings"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.home.HomeTab"
-            android:label="@string/title_activity_home_tab" >
+            android:label="@string/title_activity_home_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.menu.MenuTab"
-            android:label="@string/title_activity_menu_tab" >
+            android:label="@string/title_activity_menu_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="client.orders.OrderTab"
-            android:label="@string/title_activity_order_tab" >
+            android:label="@string/title_activity_order_tab"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
