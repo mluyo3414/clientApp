@@ -60,9 +60,7 @@ public class MainActivity extends TabActivity
 
         createTabs();
 
-        settings_ = new SettingsPreferenceActivity(); // TODO: settings
-                                                      // initialization
-        // causes an error
+        settings_ = new SettingsPreferenceActivity();
 
         // starts the layout objects
         /*
@@ -72,19 +70,13 @@ public class MainActivity extends TabActivity
          * R.id.connectionStatus );
          */
 
-        // TODO: Checking for server causes an error
+        // TODO: Need to test this
         // Attempt to connect to the server with the saved settings if it
         // fails then display the settings menu to get the port and IP
         // number If it succeeds then continue to display the main menu
-        if ( connectServerSettings() )
+        if ( !connectServerSettings() )
         {
-            // TODO
-        }
-        if ( connectServerSettings() )// else
-        {
-            Toast.makeText( getApplicationContext(),
-                    "Failed to connect to server, check settings",
-                    Toast.LENGTH_LONG ).show();
+            alertUserServerIsNotConnected();
 
             // Start the settings activity
             Intent settingsIntention =
@@ -93,9 +85,11 @@ public class MainActivity extends TabActivity
 
             MainActivity.this.startActivity( settingsIntention );
         }
+        else
+        {
+            connectedToServer_ = true;
+        }
 
-        // listener function gets called
-        // buttonPressed();
     }
 
     /**
@@ -109,7 +103,7 @@ public class MainActivity extends TabActivity
     private boolean connectServerSettings()
     {
         boolean ipAndPortValuesSet = settings_.iPandPortValueAreSet();
-        if ( ipAndPortValuesSet ) // TODO
+        if ( ipAndPortValuesSet ) // TODO: test
         {
             // Attempt to connect
             return attemptServerConnection();
@@ -140,7 +134,7 @@ public class MainActivity extends TabActivity
                 // if fields are not empty
                 if ( (!ipAddress.getText().toString().isEmpty()) &&
 
-                (!portNumber.getText().toString().isEmpty()) )
+                        (!portNumber.getText().toString().isEmpty()) )
                 {
                     // // get values from Text edit
                     // myActivity = new ConnectAsync( MainActivity.this );
@@ -166,23 +160,23 @@ public class MainActivity extends TabActivity
      */
     private boolean attemptServerConnection()
     {
-        // try
-        // {
-        // // get values from Text edit
-        // myActivity = new ConnectAsync( MainActivity.this );
-        // stringPort = portNumber.getText().toString();
-        // stringIP = ipAddress.getText().toString();
-        //
-        // IPandPort = stringIP + ":" + stringPort;
-        //
-        // // start async task
-        // myActivity.execute( IPandPort );
-        // return true;
-        // }
-        // catch ( Exception ex )
-        // {
-        // System.err.print( "Error connecting to the server: " + ex );
-        // }
+        try
+        {
+            // get values from Text edit
+            myActivity = new ConnectAsync( MainActivity.this );
+            stringPort = portNumber.getText().toString();
+            stringIP = ipAddress.getText().toString();
+
+            IPandPort = stringIP + ":" + stringPort;
+
+            // start async task
+            myActivity.execute( IPandPort );
+            return true;
+        }
+        catch ( Exception ex )
+        {
+            System.err.print( "Error connecting to the server: " + ex );
+        }
 
         return false;
     }
@@ -217,5 +211,36 @@ public class MainActivity extends TabActivity
         // set HOme tab as default (zero based)
         tabHost.setCurrentTab( 2 );
         tabHost.setCurrentTab( 1 );
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see android.app.ActivityGroup#onResume()
+     * 
+     * Overrides the resume in order to raise a toast if it's not connected to
+     * the server
+     */
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if ( !connectedToServer_ )
+        {
+            alertUserServerIsNotConnected();
+        }
+    }
+
+    /**
+     * Raises a toast informing the user that the application is not connected
+     * successfully to the server.
+     */
+    private void alertUserServerIsNotConnected()
+    {
+        Toast.makeText( getApplicationContext(),
+                "Not connected to server, check the settings.",
+                Toast.LENGTH_LONG )
+                .show();
     }
 }

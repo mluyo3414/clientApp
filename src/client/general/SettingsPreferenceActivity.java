@@ -122,11 +122,6 @@ public class SettingsPreferenceActivity extends Activity
             public void onItemClick( AdapterView<?> parent, View view,
                     int position, long id )
             {
-                Toast.makeText( getApplicationContext(),
-                        "Click ListItem Number " + position,
-                        Toast.LENGTH_SHORT / 2 )
-                        .show();
-
                 // Call the function to handle the updated preference
                 handleUpdatePreferenceSelection( position );
             }
@@ -162,18 +157,17 @@ public class SettingsPreferenceActivity extends Activity
             break;
 
         case 2: // The payment preference
-            // TODO: Call a unique payment dialog
-            // TODO: Integrate paypal
+            // TODO: Call a unique payment dialog and Integrate paypal
             break;
 
         case 3: // The home location preference
-            // TODO: change ip to home settings, need to set a title string in
-            // the R.string file
+            // TODO: an interface to select only locations of existing
+            // restaurants.
             displayUpdateSettingsDialog(
-                    getString( R.string.pref_title_ip ),
+                    getString( R.string.pref_title_home_location ),
                     preference_.getString(
-                            getString( R.string.pref_title_ip ),
-                            getString( R.string.pref_title_ip ) ) );
+                            getString( R.string.pref_title_home_location ),
+                            getString( R.string.pref_title_home_location ) ) );
             break;
 
         case 4: // The Port preference
@@ -224,7 +218,7 @@ public class SettingsPreferenceActivity extends Activity
         // Display text with the settings to be updated.
         final TextView tv1;
         tv1 = (TextView) promptsView.findViewById( R.id.updateSettingsText );
-        tv1.setText( "New " + settingsToBeUpdated + " Value:" );
+        tv1.setText( "New " + settingsToBeUpdated + ":" );
 
         // Display the current settings in the edit text box
         final EditText result = (EditText)
@@ -240,8 +234,14 @@ public class SettingsPreferenceActivity extends Activity
                             public void
                                     onClick( DialogInterface dialog, int id )
                             {
-                                updatePreference( settingsToBeUpdated,
-                                        result.getText().toString() );
+                                String newSettingsValue =
+                                        result.getText().toString().trim();
+
+                                if ( !"".equals( newSettingsValue ) )
+                                {
+                                    updatePreference( settingsToBeUpdated,
+                                            newSettingsValue );
+                                }
                             }
                         } )
                 .setNegativeButton( "Cancel",
@@ -254,10 +254,10 @@ public class SettingsPreferenceActivity extends Activity
                             }
                         } );
 
-        // create alert dialog
+        // Create the alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
-        // show it
+        // Show the dialog
         alertDialog.show();
     }
 
