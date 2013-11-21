@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +48,11 @@ public class MainActivity extends TabActivity
     ConnectAsync myActivity;
     TextView status;
 
+    /**
+     * settings menu Intent
+     */
+    Intent settingsIntention;
+
     // Keeps track of whether the server is available
     private boolean connectedToServer_ = false;
 
@@ -61,6 +68,8 @@ public class MainActivity extends TabActivity
         createTabs();
 
         settings_ = new SettingsPreferenceActivity();
+        settingsIntention =
+                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
 
         // starts the layout objects
         /*
@@ -74,20 +83,24 @@ public class MainActivity extends TabActivity
         // Attempt to connect to the server with the saved settings if it
         // fails then display the settings menu to get the port and IP
         // number If it succeeds then continue to display the main menu
-        if ( !connectServerSettings() )
+        if ( connectServerSettings() ) // removed !
         {
             alertUserServerIsNotConnected();
 
             // Start the settings activity
-            Intent settingsIntention =
-                    new Intent( MainActivity.this,
-                            SettingsPreferenceActivity.class );
+            /*
+             * Intent settingsIntention = new Intent( MainActivity.this,
+             * SettingsPreferenceActivity.class );
+             */
 
             MainActivity.this.startActivity( settingsIntention );
         }
         else
         {
             connectedToServer_ = true;
+
+            // Final destination for this item
+            // createTabs();
         }
 
     }
@@ -115,8 +128,21 @@ public class MainActivity extends TabActivity
     @Override
     public boolean onCreateOptionsMenu( Menu menu )
     {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate( R.menu.main_home, menu );
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate( R.menu.settings, menu );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected( MenuItem item )
+    {
+        switch ( item.getItemId() )
+        {
+        case R.id.action_settings:
+            MainActivity.this.startActivity( settingsIntention );
+            break;
+        }
+
         return true;
     }
 
@@ -134,7 +160,7 @@ public class MainActivity extends TabActivity
                 // if fields are not empty
                 if ( (!ipAddress.getText().toString().isEmpty()) &&
 
-                        (!portNumber.getText().toString().isEmpty()) )
+                (!portNumber.getText().toString().isEmpty()) )
                 {
                     // // get values from Text edit
                     // myActivity = new ConnectAsync( MainActivity.this );
@@ -240,7 +266,6 @@ public class MainActivity extends TabActivity
     {
         Toast.makeText( getApplicationContext(),
                 "Not connected to server, check the settings.",
-                Toast.LENGTH_LONG )
-                .show();
+                Toast.LENGTH_LONG ).show();
     }
 }
