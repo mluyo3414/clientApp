@@ -32,5 +32,8 @@
     <string name="title_activity_order_confirmed_fragment">OrderConfirmedFragment</string>
     <string name="title_activity_confirm_order_dialog">ConfirmOrderDialog</string>
     <string name="title_activity_add_to_plate_dialog">AddToPlateDialog</string>
+    <string name="title_activity_home_tab">HomeTab</string>
+    <string name="title_activity_menu_tab">MenuTab</string>
+    <string name="title_activity_order_tab">OrderTab</string>
 
 </resources>

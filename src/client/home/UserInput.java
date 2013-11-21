@@ -1,7 +1,5 @@
 package client.home;
 
-import java.util.ArrayList;
-
 import com.example.foodnow.R;
 
 import android.os.Bundle;
@@ -13,13 +11,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * 

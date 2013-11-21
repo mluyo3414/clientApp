@@ -3,6 +3,7 @@ package client.home;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,10 +11,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TabHost.TabSpec;
 import client.general.ConnectAsync;
 import client.general.SettingsPreferenceActivity;
+import client.menu.MenuTab;
+import client.orders.OrderTab;
 
 import com.example.foodnow.R;
 
@@ -27,7 +32,8 @@ import com.example.foodnow.R;
  *         This is the first Activity where the client inputs the IP and port.
  * 
  */
-public class MainActivity extends Activity
+@SuppressWarnings( { "unused", "deprecation" } )
+public class MainActivity extends TabActivity
 {
     EditText ipAddress;
     EditText portNumber;
@@ -52,15 +58,19 @@ public class MainActivity extends Activity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main_home );
 
+        createTabs();
+
         settings_ = new SettingsPreferenceActivity(); // TODO: settings
                                                       // initialization
         // causes an error
 
         // starts the layout objects
-        ipAddress = (EditText) findViewById( R.id.IpAddress );
-        portNumber = (EditText) findViewById( R.id.IpPort );
-        connectButton = (Button) findViewById( R.id.connectButton );
-        status = (TextView) findViewById( R.id.connectionStatus );
+        /*
+         * ipAddress = (EditText) findViewById( R.id.IpAddress ); portNumber =
+         * (EditText) findViewById( R.id.IpPort ); connectButton = (Button)
+         * findViewById( R.id.connectButton ); status = (TextView) findViewById(
+         * R.id.connectionStatus );
+         */
 
         // TODO: Checking for server causes an error
         // Attempt to connect to the server with the saved settings if it
@@ -70,12 +80,11 @@ public class MainActivity extends Activity
         {
             // TODO
         }
-        else
+        if ( connectServerSettings() )// else
         {
             Toast.makeText( getApplicationContext(),
                     "Failed to connect to server, check settings",
-                    Toast.LENGTH_LONG )
-                    .show();
+                    Toast.LENGTH_LONG ).show();
 
             // Start the settings activity
             Intent settingsIntention =
@@ -131,7 +140,7 @@ public class MainActivity extends Activity
                 // if fields are not empty
                 if ( (!ipAddress.getText().toString().isEmpty()) &&
 
-                        (!portNumber.getText().toString().isEmpty()) )
+                (!portNumber.getText().toString().isEmpty()) )
                 {
                     // // get values from Text edit
                     // myActivity = new ConnectAsync( MainActivity.this );
@@ -176,5 +185,37 @@ public class MainActivity extends Activity
         // }
 
         return false;
+    }
+
+    private void createTabs()
+    {
+        TabHost tabHost = getTabHost();
+
+        // Home tab
+        Intent intentHome = new Intent().setClass( this, HomeTab.class );
+        TabSpec tabSpecHome =
+                tabHost.newTabSpec( "Home" ).setIndicator( "Home" )
+                        .setContent( intentHome );
+
+        // Menu tab
+        Intent intentMenu = new Intent().setClass( this, MenuTab.class );
+        TabSpec tabSpecMenu =
+                tabHost.newTabSpec( "Menu" ).setIndicator( "Menu" )
+                        .setContent( intentMenu );
+
+        // Order tab
+        Intent intentOrder = new Intent().setClass( this, OrderTab.class );
+        TabSpec tabSpecOrder =
+                tabHost.newTabSpec( "Order" ).setIndicator( "Order" )
+                        .setContent( intentOrder );
+
+        // add all tabs
+        tabHost.addTab( tabSpecMenu );
+        tabHost.addTab( tabSpecHome );
+        tabHost.addTab( tabSpecOrder );
+
+        // set HOme tab as default (zero based)
+        tabHost.setCurrentTab( 2 );
+        tabHost.setCurrentTab( 1 );
     }
 }
