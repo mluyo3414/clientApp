@@ -34,10 +34,10 @@ import com.example.foodnow.R;
  * 
  * @version Nov 8, 2013
  * 
- *          A {@link PreferenceActivity} that presents a set of application
- *          settings. On handset devices, settings are presented as a single
- *          list. On tablets, settings are split by category, with category
- *          headers shown to the left of the list of settings.
+ *          This activity displays a list of all of the setting preferecnes.
+ *          When selected a dialog appears allowing the user to change the
+ *          setting. Each setting is stored in a non volatile shared preference
+ *          file.
  * 
  */
 public class SettingsPreferenceActivity extends Activity
@@ -131,7 +131,6 @@ public class SettingsPreferenceActivity extends Activity
                 handleUpdatePreferenceSelection( position );
             }
         } );
-
     }
 
     /**
@@ -147,26 +146,53 @@ public class SettingsPreferenceActivity extends Activity
         switch ( positionOfSettingToUpdate )
         {
         case 0: // The name preference
-            // preferenceEditor_.putString( getString( R.id.nameEditText ),
-            // (String) s );
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_name ),
+                    preference_.getString(
+                            getString( R.string.pref_title_name ),
+                            getString( R.string.pref_title_name ) ) );
             break;
-        case 1: // The phone number preference
-            break;
-        case 2: // The payment preference
-            break;
-        case 3: // The home location preference
-            break;
-        case 4: // The ip preference
 
+        case 1: // The phone number preference
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_phone_number ),
+                    preference_.getString(
+                            getString( R.string.pref_title_phone_number ),
+                            getString( R.string.pref_title_phone_number ) ) );
+            break;
+
+        case 2: // The payment preference
+            // TODO: Call a unique payment dialog
+            // TODO: Integrate paypal
+            break;
+
+        case 3: // The home location preference
+            // TODO: change ip to home settings, need to set a title string in
+            // the R.string file
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_ip ),
+                    preference_.getString(
+                            getString( R.string.pref_title_ip ),
+                            getString( R.string.pref_title_ip ) ) );
+            break;
+
+        case 4: // The Port preference
             displayUpdateSettingsDialog(
                     getString( R.string.pref_title_port ),
                     preference_.getString(
-                            getString( R.string.pref_title_port ), "" ) );
-
+                            getString( R.string.pref_title_port ),
+                            getString( R.string.pref_title_port ) ) );
             break;
-        case 5: // The port preference
+
+        case 5: // The IP preference
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_ip ),
+                    preference_.getString(
+                            getString( R.string.pref_title_ip ),
+                            getString( R.string.pref_title_ip ) ) );
             break;
         }
+
     }
 
     /**
@@ -191,14 +217,14 @@ public class SettingsPreferenceActivity extends Activity
         AlertDialog.Builder alertDialogBuilder =
                 new AlertDialog.Builder( this );
 
-        // set prompts.xml to alertdialog builder and sets the title
+        // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
         alertDialogBuilder.setTitle( "Update stored " + settingsToBeUpdated );
 
         // Display text with the settings to be updated.
         final TextView tv1;
         tv1 = (TextView) promptsView.findViewById( R.id.updateSettingsText );
-        tv1.setText( settingsToBeUpdated );
+        tv1.setText( "New " + settingsToBeUpdated + " Value:" );
 
         // Display the current settings in the edit text box
         final EditText result = (EditText)
@@ -243,6 +269,7 @@ public class SettingsPreferenceActivity extends Activity
     {
         try
         {
+            // TODO: need this?
             // nameText_ = (EditText) findViewById( R.id.nameEditText );
             // // nameText_.setText( preference_
             // // .getString( getString( R.id.nameEditText ),
@@ -285,7 +312,6 @@ public class SettingsPreferenceActivity extends Activity
     private void updatePreference( String preferenceToUpdate,
             String newPreferenceValue )
     {
-
         preferenceEditor_.putString( preferenceToUpdate, newPreferenceValue );
 
         preferenceEditor_.commit();
@@ -293,6 +319,10 @@ public class SettingsPreferenceActivity extends Activity
                 preferenceToUpdate + " has been updated.",
                 Toast.LENGTH_SHORT )
                 .show();
+
+        preference_ =
+                getSharedPreferences( getString( R.string.pref_title_file ),
+                        Context.MODE_PRIVATE );
     }
 
     /**
@@ -327,47 +357,6 @@ public class SettingsPreferenceActivity extends Activity
     }
 
     /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener =
-            new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange( Preference preference,
-                        Object value )
-                {
-                    String stringValue = value.toString();
-
-                    if ( preference instanceof ListPreference )
-                    {
-                        // For list preferences, look up the correct display
-                        // value in
-                        // the preference's 'entries' list.
-                        ListPreference listPreference =
-                                (ListPreference) preference;
-                        int index =
-                                listPreference.findIndexOfValue( stringValue );
-
-                        // Set the summary to reflect the new value.
-                        preference.setSummary(
-                                index >= 0
-                                        ? listPreference.getEntries()[index]
-                                        : null );
-
-                    }
-                    else
-                    {
-                        // For all other preferences, set the summary to the
-                        // value's
-                        // simple string representation.
-                        preference.setSummary( stringValue );
-                    }
-                    return true;
-                }
-            };
-
-    /**
      * Checks to ensure the IP isn't the default value, then checks to see if
      * the Port isn't the default value
      * 
@@ -380,7 +369,7 @@ public class SettingsPreferenceActivity extends Activity
             stringIP_ =
                     preference_.getString(
                             getString( R.string.pref_title_ip ),
-                            "pref_general" );
+                            getString( R.string.pref_title_ip ) );
 
             if ( null != stringIP_
                     && getString( R.string.pref_default_ip ) != stringIP_ )
@@ -388,7 +377,7 @@ public class SettingsPreferenceActivity extends Activity
                 stringPort_ =
                         preference_.getString(
                                 getString( R.string.pref_title_port ),
-                                "pref_general" );
+                                getString( R.string.pref_title_port ) );
 
                 if ( null != stringPort_
                         && getString( R.string.pref_default_port ) != stringPort_ )
@@ -399,7 +388,7 @@ public class SettingsPreferenceActivity extends Activity
         }
         catch ( Exception ex )
         {
-
+            System.err.print( "Error in checking Port and Ip value: " + ex );
         }
 
         return false;
