@@ -1,5 +1,7 @@
 package client.orders;
 
+import client.home.ConnectAsyncCurrentConnected;
+import client.home.CurrentConnected;
 import client.menu.MenuTab;
 
 import com.example.foodnow.R;
@@ -47,6 +49,11 @@ public class OrderTab extends ListActivity
      * Confirm button
      */
     private static Button button;
+
+    /**
+     * async task sends data to the server
+     */
+    OrderTabAsyncTask orderToServer;
 
     /**
      * Called when the activity is first created
@@ -186,9 +193,7 @@ public class OrderTab extends ListActivity
                 alertbox.setPositiveButton( "Yes",
                         new DialogInterface.OnClickListener()
                         {
-                            // //////////////////////////////////////////
-                            // do something when the YES button is clicked
-                            // //////////////////////////////////////////
+
                             public void
                                     onClick( DialogInterface arg0, int arg1 )
                             {
@@ -197,8 +202,14 @@ public class OrderTab extends ListActivity
                                         new AlertDialog.Builder( OrderTab.this );
                                 // set the message to display
                                 alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: add id here" );
-                                // set a positive/yes button and create a
-                                // listener
+
+                                // //////////////////////////////////////////
+                                // start async task send arraylist string, name,
+                                orderToServer = new OrderTabAsyncTask();
+                                orderToServer.execute( list.toString() ); // and
+                                                                          // name
+                                // //////////////////////////////////////////
+
                                 alertbox.setPositiveButton( "Ok",
                                         new DialogInterface.OnClickListener()
                                         {
