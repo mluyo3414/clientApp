@@ -10,10 +10,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -52,14 +48,6 @@ public class SettingsPreferenceActivity extends Activity
     SharedPreferences.Editor preferenceEditor_;
 
     /**
-     * @return the IP
-     */
-    public String getStringIP()
-    {
-        return stringIP_;
-    }
-
-    /**
      * @param stringIP_
      *            the Port
      */
@@ -67,7 +55,57 @@ public class SettingsPreferenceActivity extends Activity
     {
         this.stringIP_ = stringIP_;
     }
+    
+    /**
+     * @return the IP
+     */
+    public String getStringIP()
+    {
+        return preference_.getString(
+                getString( R.string.pref_title_ip ),
+                getString( R.string.pref_title_ip ) ) ;
+    }
 
+    /**
+     * @return the IP
+     */
+    public String getStringPort()
+    {
+        return preference_.getString(
+                getString( R.string.pref_title_port ),
+                getString( R.string.pref_title_port ) ) ;
+    }
+    
+    /**
+     * @return the name saved in the preferences
+     */
+    public String getName()
+    {
+        return preference_.getString(
+                getString( R.string.pref_title_name ),
+                getString( R.string.pref_title_name ) ) ;
+    }
+    
+    /**
+     * @return the name saved in the preferences
+     */
+    public String getStringHomeLocation()
+    {
+        return preference_.getString(
+                getString( R.string.pref_title_home_location ),
+                getString( R.string.pref_title_home_location ) ) ;
+    }
+    
+    /**
+     * @return the name saved in the preferences
+     */
+    public String getPhoneNumber()
+    {
+        return preference_.getString(
+                getString( R.string.pref_title_phone_number ),
+                getString( R.string.pref_title_phone_number ) ) ;
+    }
+    
     @Override
     public void onCreate( Bundle savedInstanceState )
     {
