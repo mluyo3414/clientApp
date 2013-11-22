@@ -243,7 +243,7 @@ public class SettingsPreferenceActivity extends Activity
         // get prompts.xml view
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
         View promptsView =
-                li.inflate( R.layout.update_settings_dialog, null
+                li.inflate( R.layout.dialog_update_settings, null
                         );
 
         AlertDialog.Builder alertDialogBuilder =

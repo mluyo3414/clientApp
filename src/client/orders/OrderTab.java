@@ -1,6 +1,5 @@
 package client.orders;
 
-import com.example.foodnow.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -10,12 +9,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.foodnow.R;
 
 public class OrderTab extends ListActivity
 {
@@ -130,7 +132,8 @@ public class OrderTab extends ListActivity
                                     Double.parseDouble( list
                                             .get( i )
                                             .substring(
-                                                    list.get( i ).indexOf( "$" ) + 1 ) );
+                                                    list.get( i )
+                                                            .indexOf( "$" ) + 1 ) );
                         }
                         footer.setTextSize( 25 );
                         DecimalFormat twoDForm = new DecimalFormat( "#.##" );
@@ -140,19 +143,20 @@ public class OrderTab extends ListActivity
                 } );
 
         // set a negative/no button and create a listener
-        alertbox.setNegativeButton( "No", new DialogInterface.OnClickListener()
-        {
+        alertbox.setNegativeButton( "No",
+                new DialogInterface.OnClickListener()
+                {
 
-            // //////////////////////////////////////////
-            // do something when the NO button is clicked
-            // //////////////////////////////////////////
-            public void onClick( DialogInterface arg0, int arg1 )
-            {
-                Toast.makeText( getApplicationContext(),
-                        "The item was NOT removed from your plate",
-                        Toast.LENGTH_SHORT ).show();
-            }
-        } );
+                    // //////////////////////////////////////////
+                    // do something when the NO button is clicked
+                    // //////////////////////////////////////////
+                    public void onClick( DialogInterface arg0, int arg1 )
+                    {
+                        Toast.makeText( getApplicationContext(),
+                                "The item was NOT removed from your plate",
+                                Toast.LENGTH_SHORT ).show();
+                    }
+                } );
 
         alertbox.show();
 
@@ -268,26 +272,55 @@ public class OrderTab extends ListActivity
         {
         }
 
-        // prepare the alert box
-        AlertDialog.Builder alertbox = new AlertDialog.Builder( OrderTab.this );
-        // set the message to display
-        alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: "
-                + orderToServer.getOrderNumber() );
+        // // prepare the alert box
+        // AlertDialog.Builder alertbox = new AlertDialog.Builder( OrderTab.this
+        // );
+        // // set the message to display
+        // alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: "
+        // + orderToServer.getOrderNumber() );
 
-        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
-        {
-            public void onClick( DialogInterface arg0, int arg1 )
-            {
-                // after order completion resets
-                // the order
-                list.clear();
-                total = 0.0;
-                adapter.notifyDataSetChanged();
-                footer.setText( "" );
-                button.setEnabled( false );
-                numberOfItemsOnPlate = 0;
-            }
-        } );
+        // get prompts.xml view
+        LayoutInflater li =
+                LayoutInflater.from( getBaseContext() );
+        View promptsView =
+                li.inflate( R.layout.dialog_order_confirmed, null );
+
+        // prepare the alert box
+        AlertDialog.Builder alertbox =
+                new AlertDialog.Builder( OrderTab.this );
+
+        alertbox.setView( promptsView );
+        alertbox.setTitle( "Order Confirmed" );
+
+        // Display text prompting the user that the order was confirmed
+        final TextView confirmationTextView;
+        confirmationTextView =
+                (TextView) promptsView
+                        .findViewById( R.id.orderconfirmationTextView );
+        confirmationTextView.setText( "Your order has been confirmed" );
+
+        // TODO: display the order number
+        final TextView orderNumberTextView;
+        orderNumberTextView =
+                (TextView) promptsView
+                        .findViewById( R.id.confirmationTextView );
+        orderNumberTextView.setText( "Order ID: add id here" );
+
+        alertbox.setPositiveButton( "Ok",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface arg0, int arg1 )
+                    {
+                        // after order completion resets
+                        // the order
+                        list.clear();
+                        total = 0.0;
+                        adapter.notifyDataSetChanged();
+                        footer.setText( "" );
+                        button.setEnabled( false );
+                        numberOfItemsOnPlate = 0;
+                    }
+                } );
         alertbox.show();
     }
 
