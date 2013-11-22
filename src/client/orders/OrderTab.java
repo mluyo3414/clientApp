@@ -1,9 +1,5 @@
 package client.orders;
 
-import client.home.ConnectAsyncCurrentConnected;
-import client.home.CurrentConnected;
-import client.menu.MenuTab;
-
 import com.example.foodnow.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -12,11 +8,9 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -25,9 +19,13 @@ import android.widget.Toast;
 
 public class OrderTab extends ListActivity
 {
+
+    /**
+     * async task sends data to the server
+     */
+    OrderTabAsyncTask orderToServer;
     /** Items entered by the user is stored in this ArrayList variable */
     private static ArrayList<String> list;
-
     /** Declaring an ArrayAdapter to set items to ListView */
     private static ArrayAdapter<String> adapter;
     /**
@@ -43,22 +41,21 @@ public class OrderTab extends ListActivity
      * alter confirming an addition to your plate
      */
     private AlertDialog.Builder alertbox;
+
     /**
      * current item number selected
      */
     private int currentNumber;
     /**
+     * number of items in the order
+     */
+    private static int numberOfItemsOnPlate;
+    /**
      * Confirm button
      */
     private static Button button;
-
     /**
-     * async task sends data to the server
-     */
-    OrderTabAsyncTask orderToServer;
-
-    /**
-     * total of the order
+     * total of the order in dollars
      */
     private static Double total;
 
@@ -70,6 +67,7 @@ public class OrderTab extends ListActivity
     {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_order_tab );
+        numberOfItemsOnPlate = 0;
 
         footer = (TextView) findViewById( R.id.Footer );
         list = new ArrayList<String>();
@@ -81,6 +79,7 @@ public class OrderTab extends ListActivity
         setListAdapter( adapter );
 
         button = (Button) findViewById( R.id.Button );
+        button.setEnabled( false );
 
         addListenerOnButton();
 
@@ -157,6 +156,13 @@ public class OrderTab extends ListActivity
 
         alertbox.show();
 
+        numberOfItemsOnPlate--;
+
+        if ( numberOfItemsOnPlate <= 0 )
+        {
+            button.setEnabled( false );
+        }
+
     }
 
     /**
@@ -169,6 +175,8 @@ public class OrderTab extends ListActivity
     {
         list.add( newItem );
         adapter.notifyDataSetChanged();
+        button.setEnabled( true );
+        numberOfItemsOnPlate++;
 
         // calculates the total
         total = 0.0;
@@ -226,10 +234,9 @@ public class OrderTab extends ListActivity
                                 orderToServer = new OrderTabAsyncTask();
                                 orderToServer.execute( list.toString(),
                                         userName, total.toString() );
-                                
+
                                 orderConfirmation();
-                                
-                                
+
                             }
                         } );
 
@@ -253,38 +260,35 @@ public class OrderTab extends ListActivity
         } );
 
     }
-    
+
     private void orderConfirmation()
     {
-        // waits for the confirmation number to be given 
-        while( orderToServer.getOrderNumber() == null )
-        {           
+        // waits for the confirmation number to be given
+        while ( orderToServer.getOrderNumber() == null )
+        {
         }
-        
+
         // prepare the alert box
-        AlertDialog.Builder alertbox =
-                new AlertDialog.Builder( OrderTab.this );
+        AlertDialog.Builder alertbox = new AlertDialog.Builder( OrderTab.this );
         // set the message to display
         alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: "
                 + orderToServer.getOrderNumber() );
 
-        alertbox.setPositiveButton( "Ok",
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick(
-                            DialogInterface arg0,
-                            int arg1 )
-                    {
-                        // after order completion resets
-                        // the order
-                        list.clear();
-                        total = 0.0;
-                        adapter.notifyDataSetChanged();
-                        footer.setText( "" );
-                    }
-                } );
+        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
+        {
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
+                // after order completion resets
+                // the order
+                list.clear();
+                total = 0.0;
+                adapter.notifyDataSetChanged();
+                footer.setText( "" );
+                button.setEnabled( false );
+                numberOfItemsOnPlate = 0;
+            }
+        } );
         alertbox.show();
     }
-    
-    
+
 }

@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
@@ -26,7 +27,8 @@ import client.home.MainActivity;
 
 import com.example.foodnow.R;
 
-@SuppressWarnings( "unused" )
+@SuppressLint( "SimpleDateFormat" )
+@SuppressWarnings( { "unused", "rawtypes" } )
 public class OrderTabAsyncTask extends AsyncTask
 {
     private String orderNumber;
