@@ -10,8 +10,10 @@ import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +56,11 @@ public class OrderTab extends ListActivity
      * async task sends data to the server
      */
     OrderTabAsyncTask orderToServer;
+
+    /**
+     * total of the order
+     */
+    private static Double total;
 
     /**
      * Called when the activity is first created
@@ -116,7 +123,8 @@ public class OrderTab extends ListActivity
 
                         adapter.notifyDataSetChanged();
 
-                        double total = 0;
+                        // recalculates the total
+                        total = 0.0;
                         for ( int i = 0; i < list.size(); i++ )
                         {
                             total +=
@@ -127,8 +135,8 @@ public class OrderTab extends ListActivity
                         }
                         footer.setTextSize( 25 );
                         DecimalFormat twoDForm = new DecimalFormat( "#.##" );
-                        footer.setText( "Total: $"
-                                + Double.valueOf( twoDForm.format( total ) ) );
+                        total = Double.valueOf( twoDForm.format( total ) );
+                        footer.setText( "Total: $" + total );
                     }
                 } );
 
@@ -162,7 +170,8 @@ public class OrderTab extends ListActivity
         list.add( newItem );
         adapter.notifyDataSetChanged();
 
-        double total = 0;
+        // calculates the total
+        total = 0.0;
         for ( int i = 0; i < list.size(); i++ )
         {
             total +=
@@ -171,7 +180,9 @@ public class OrderTab extends ListActivity
         }
         footer.setTextSize( 25 );
         DecimalFormat twoDForm = new DecimalFormat( "#.##" );
-        footer.setText( "Total: $" + Double.valueOf( twoDForm.format( total ) ) );
+        total = Double.valueOf( twoDForm.format( total ) );
+
+        footer.setText( "Total: $" + total );
 
     }
 
@@ -194,32 +205,31 @@ public class OrderTab extends ListActivity
                         new DialogInterface.OnClickListener()
                         {
 
+                            /**
+                             * Order confirmation dialogue
+                             */
+                            @SuppressWarnings( "unchecked" )
                             public void
                                     onClick( DialogInterface arg0, int arg1 )
                             {
-                                // prepare the alert box
-                                AlertDialog.Builder alertbox =
-                                        new AlertDialog.Builder( OrderTab.this );
-                                // set the message to display
-                                alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: add id here" );
+                                // sends data to the server
+                                SharedPreferences preference_ =
+                                        getSharedPreferences(
+                                                getString( R.string.pref_title_file ),
+                                                Context.MODE_PRIVATE );
+                                String userName =
+                                        preference_
+                                                .getString(
+                                                        getString( R.string.pref_title_name ),
+                                                        getString( R.string.pref_title_name ) );
 
-                                // //////////////////////////////////////////
-                                // start async task send arraylist string, name,
                                 orderToServer = new OrderTabAsyncTask();
-                                orderToServer.execute( list.toString() ); // and
-                                                                          // name
-                                // //////////////////////////////////////////
-
-                                alertbox.setPositiveButton( "Ok",
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            public void onClick(
-                                                    DialogInterface arg0,
-                                                    int arg1 )
-                                            {
-                                            }
-                                        } );
-                                alertbox.show();
+                                orderToServer.execute( list.toString(),
+                                        userName, total.toString() );
+                                
+                                orderConfirmation();
+                                
+                                
                             }
                         } );
 
@@ -243,4 +253,38 @@ public class OrderTab extends ListActivity
         } );
 
     }
+    
+    private void orderConfirmation()
+    {
+        // waits for the confirmation number to be given 
+        while( orderToServer.getOrderNumber() == null )
+        {           
+        }
+        
+        // prepare the alert box
+        AlertDialog.Builder alertbox =
+                new AlertDialog.Builder( OrderTab.this );
+        // set the message to display
+        alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: "
+                + orderToServer.getOrderNumber() );
+
+        alertbox.setPositiveButton( "Ok",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(
+                            DialogInterface arg0,
+                            int arg1 )
+                    {
+                        // after order completion resets
+                        // the order
+                        list.clear();
+                        total = 0.0;
+                        adapter.notifyDataSetChanged();
+                        footer.setText( "" );
+                    }
+                } );
+        alertbox.show();
+    }
+    
+    
 }
