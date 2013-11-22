@@ -25,7 +25,7 @@ public class OrderTab extends ListActivity
     /**
      * async task sends data to the server
      */
-    OrderTabAsyncTask orderToServer;
+    private static OrderTabAsyncTask orderToServer;
     /** Items entered by the user is stored in this ArrayList variable */
     private static ArrayList<String> list;
     /** Declaring an ArrayAdapter to set items to ListView */
@@ -132,8 +132,7 @@ public class OrderTab extends ListActivity
                                     Double.parseDouble( list
                                             .get( i )
                                             .substring(
-                                                    list.get( i )
-                                                            .indexOf( "$" ) + 1 ) );
+                                                    list.get( i ).indexOf( "$" ) + 1 ) );
                         }
                         footer.setTextSize( 25 );
                         DecimalFormat twoDForm = new DecimalFormat( "#.##" );
@@ -143,20 +142,19 @@ public class OrderTab extends ListActivity
                 } );
 
         // set a negative/no button and create a listener
-        alertbox.setNegativeButton( "No",
-                new DialogInterface.OnClickListener()
-                {
+        alertbox.setNegativeButton( "No", new DialogInterface.OnClickListener()
+        {
 
-                    // //////////////////////////////////////////
-                    // do something when the NO button is clicked
-                    // //////////////////////////////////////////
-                    public void onClick( DialogInterface arg0, int arg1 )
-                    {
-                        Toast.makeText( getApplicationContext(),
-                                "The item was NOT removed from your plate",
-                                Toast.LENGTH_SHORT ).show();
-                    }
-                } );
+            // //////////////////////////////////////////
+            // do something when the NO button is clicked
+            // //////////////////////////////////////////
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
+                Toast.makeText( getApplicationContext(),
+                        "The item was NOT removed from your plate",
+                        Toast.LENGTH_SHORT ).show();
+            }
+        } );
 
         alertbox.show();
 
@@ -280,14 +278,11 @@ public class OrderTab extends ListActivity
         // + orderToServer.getOrderNumber() );
 
         // get prompts.xml view
-        LayoutInflater li =
-                LayoutInflater.from( getBaseContext() );
-        View promptsView =
-                li.inflate( R.layout.dialog_order_confirmed, null );
+        LayoutInflater li = LayoutInflater.from( getBaseContext() );
+        View promptsView = li.inflate( R.layout.dialog_order_confirmed, null );
 
         // prepare the alert box
-        AlertDialog.Builder alertbox =
-                new AlertDialog.Builder( OrderTab.this );
+        AlertDialog.Builder alertbox = new AlertDialog.Builder( OrderTab.this );
 
         alertbox.setView( promptsView );
         alertbox.setTitle( "Order Confirmed" );
@@ -302,25 +297,24 @@ public class OrderTab extends ListActivity
         // TODO: display the order number
         final TextView orderNumberTextView;
         orderNumberTextView =
-                (TextView) promptsView
-                        .findViewById( R.id.confirmationTextView );
-        orderNumberTextView.setText( "Order ID: add id here" );
+                (TextView) promptsView.findViewById( R.id.confirmationTextView );
+        orderNumberTextView.setText( "Order ID: "
+                + orderToServer.getOrderNumber() );
 
-        alertbox.setPositiveButton( "Ok",
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface arg0, int arg1 )
-                    {
-                        // after order completion resets
-                        // the order
-                        list.clear();
-                        total = 0.0;
-                        adapter.notifyDataSetChanged();
-                        footer.setText( "" );
-                        button.setEnabled( false );
-                        numberOfItemsOnPlate = 0;
-                    }
-                } );
+        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
+        {
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
+                // after order completion resets
+                // the order
+                list.clear();
+                total = 0.0;
+                adapter.notifyDataSetChanged();
+                footer.setText( "" );
+                button.setEnabled( false );
+                numberOfItemsOnPlate = 0;
+            }
+        } );
         alertbox.show();
     }
 
