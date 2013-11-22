@@ -2,7 +2,6 @@ package client.home;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Build;
@@ -13,10 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TabHost.TabSpec;
 import client.general.ConnectAsync;
 import client.general.SettingsPreferenceActivity;
 import client.menu.MenuTab;
@@ -67,9 +67,15 @@ public class MainActivity extends TabActivity
 
         createTabs();
 
+        // LinearLayout linearLayout =
+        // (LinearLayout) findViewById( R.id.Home_Tab_View );
+        // linearLayout
+        // .setBackgroundResource( R.drawable.activity_general_background );
+
         settings_ = new SettingsPreferenceActivity();
         settingsIntention =
-                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
+                new Intent( MainActivity.this,
+                        SettingsPreferenceActivity.class );
 
         // starts the layout objects
         /*
@@ -160,7 +166,7 @@ public class MainActivity extends TabActivity
                 // if fields are not empty
                 if ( (!ipAddress.getText().toString().isEmpty()) &&
 
-                (!portNumber.getText().toString().isEmpty()) )
+                        (!portNumber.getText().toString().isEmpty()) )
                 {
                     // // get values from Text edit
                     // myActivity = new ConnectAsync( MainActivity.this );
