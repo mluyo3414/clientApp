@@ -71,7 +71,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="client.orders.PaymentActivity"
+            android:name="client.orders.PaypalPaymentActivity"
             android:label="@string/title_activity_payment"
             android:screenOrientation="portrait" >
         </activity>
