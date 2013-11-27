@@ -35,5 +35,6 @@
     <string name="title_activity_home_tab">HomeTab</string>
     <string name="title_activity_menu_tab">MenuTab</string>
     <string name="title_activity_order_tab">OrderTab</string>
+    <string name="title_activity_nutrition_tab">NutritionTab</string>
 
 </resources>

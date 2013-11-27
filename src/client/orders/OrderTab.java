@@ -118,6 +118,9 @@ public class OrderTab extends ListActivity
      */
     public void addItems( String newItem )
     {
+        // removes calorie and fat information
+        newItem = newItem.substring( 0, newItem.indexOf( "$" ) + 5 );
+
         list.add( newItem );
         adapter.notifyDataSetChanged();
         button.setEnabled( true );
@@ -288,7 +291,8 @@ public class OrderTab extends ListActivity
         {
             total +=
                     Double.parseDouble( list.get( i ).substring(
-                            list.get( i ).indexOf( "$" ) + 1 ) );
+                            list.get( i ).indexOf( "$" ) + 1) );
+
         }
         footer.setTextSize( 25 );
         DecimalFormat twoDForm = new DecimalFormat( "#.##" );

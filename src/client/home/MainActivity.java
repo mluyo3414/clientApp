@@ -74,8 +74,7 @@ public class MainActivity extends TabActivity
 
         settings_ = new SettingsPreferenceActivity();
         settingsIntention =
-                new Intent( MainActivity.this,
-                        SettingsPreferenceActivity.class );
+                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
 
         // starts the layout objects
         /*
@@ -166,7 +165,7 @@ public class MainActivity extends TabActivity
                 // if fields are not empty
                 if ( (!ipAddress.getText().toString().isEmpty()) &&
 
-                        (!portNumber.getText().toString().isEmpty()) )
+                (!portNumber.getText().toString().isEmpty()) )
                 {
                     // // get values from Text edit
                     // myActivity = new ConnectAsync( MainActivity.this );

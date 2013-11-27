@@ -93,6 +93,9 @@ public class OrderTabAsyncTask extends AsyncTask
             String s = dateFormatter.format( today );
             nameValuePairs.add( new BasicNameValuePair( "location", s ) );
 
+            // adds total
+            nameValuePairs.add( new BasicNameValuePair( "total", total ) );
+
             post.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
 
             HttpResponse response = client.execute( post );

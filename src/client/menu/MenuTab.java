@@ -37,19 +37,23 @@ public class MenuTab extends Activity
     /**
      * list of items on the menu
      */
-    private String[] web = { "Grilled Chicken Burrito - $6.79",
-            "Pulled Pork Burrito - $7.09", "Shredded Beef Burrito - $7.49",
-            "Grilled Steak Burrito - $7.49",
-            "Seasoned Ground Beef Burrito - $7.09",
-            "Vegetarian Burrito - $6.79" };
+    private String[] web =
+            {
+                    "MONTHLYSPECIAL Holiday Burrito-$7.49\n DOUBLE STEAK w THE HOLIDAY SAUCE\n  \t\t-Calories: 1,347  \t\t-Total Fat: 51G",
+                    "Grilled Chicken Burrito - $6.79\n  \t\t-Calories: 1,165\n  \t\t-Total Fat: 42G",
+                    "Pulled Pork Burrito - $7.09\n  \t\t-Calories: 1,135\n  \t\t-Total Fat: 36G",
+                    "Shredded Beef Burrito - $7.49\n  \t\t-Calories: 1,165\n  \t\t-Total Fat: 39G",
+                    "Grilled Steak Burrito - $7.49\n  \t\t-Calories: 1,165\n  \t\t-Total Fat: 41G",
+                    "Seasoned Ground Beef Burrito - $7.09\n  -Calories: 1,215\n  \t\t-Total Fat: 48G",
+                    "Vegetarian Burrito - $6.79\n  \t\t-Calories: 1,065\n  \t\t-Total Fat: 36G" };
 
     /**
      * images of items on the menu
      */
-    private Integer[] imageId = { R.drawable.chicken_burrito,
-            R.drawable.pulled_pork_burrito, R.drawable.shredded_beef_burrito,
-            R.drawable.steak_burrito, R.drawable.ground_beef_burrito,
-            R.drawable.veggie_burrito };
+    private Integer[] imageId = { R.drawable.christmas_burrito,
+            R.drawable.chicken_burrito, R.drawable.pulled_pork_burrito,
+            R.drawable.shredded_beef_burrito, R.drawable.steak_burrito,
+            R.drawable.ground_beef_burrito, R.drawable.veggie_burrito };
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
