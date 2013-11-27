@@ -28,12 +28,10 @@ import client.home.MainActivity;
 import com.example.foodnow.R;
 
 @SuppressLint( "SimpleDateFormat" )
-@SuppressWarnings( { "rawtypes", "unused" } )
+@SuppressWarnings( { "unused", "rawtypes" } )
 public class OrderTabAsyncTask extends AsyncTask
 {
     private String orderNumber;
-
-    private OrderTab orderTab;
 
     @Override
     protected Object doInBackground( Object... arg0 )
@@ -45,12 +43,9 @@ public class OrderTabAsyncTask extends AsyncTask
 
         String total = (String) arg0[2];
 
-        orderTab = (OrderTab) arg0[3];
-
         this.post( order, name, total );
 
         // TODO Takes in parameters and send to the server
-        orderTab.displayConfirmation();
         return null;
     }
 

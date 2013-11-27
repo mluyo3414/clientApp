@@ -1,6 +1,5 @@
 package client.orders;
 
-import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -23,7 +22,7 @@ import client.general.SettingsPreferenceActivity;
 
 import com.example.foodnow.R;
 
-public class OrderTab extends ListActivity implements Serializable
+public class OrderTab extends ListActivity
 {
 
     /**
@@ -65,6 +64,8 @@ public class OrderTab extends ListActivity implements Serializable
      */
     private static Double total;
 
+    private boolean nextStep;
+
     /**
      * Called when the activity is first created
      */
@@ -87,7 +88,7 @@ public class OrderTab extends ListActivity implements Serializable
         button = (Button) findViewById( R.id.Button );
         button.setEnabled( false );
 
-        addListenerOnButton();
+        onConfirmClick();
 
     }
 
@@ -125,6 +126,7 @@ public class OrderTab extends ListActivity implements Serializable
                         Toast.makeText( getApplicationContext(),
                                 "The item was removed from your plate",
                                 Toast.LENGTH_SHORT ).show();
+
                         numberOfItemsOnPlate--;
 
                         adapter.notifyDataSetChanged();
@@ -202,7 +204,7 @@ public class OrderTab extends ListActivity implements Serializable
     /**
      * When confirm button is pushed
      */
-    public void addListenerOnButton()
+    public void onConfirmClick()
     {
         button.setOnClickListener( new View.OnClickListener()
         {
@@ -225,9 +227,7 @@ public class OrderTab extends ListActivity implements Serializable
                             public void
                                     onClick( DialogInterface arg0, int arg1 )
                             {
-                                // sends data to the server
-                                OrderTab.this.callPaypal();
-
+                                OrderTab.this.checkOut();
                             }
                         } );
 
@@ -252,74 +252,79 @@ public class OrderTab extends ListActivity implements Serializable
 
     }
 
-    public void orderConfirmation()
+    private void checkOut()
     {
-        /*
-         * // sends order to the server SharedPreferences preference_ =
-         * getSharedPreferences( getString( R.string.pref_title_file ),
-         * Context.MODE_PRIVATE ); String userName = preference_.getString(
-         * getString( R.string.pref_title_name ), getString(
-         * R.string.pref_title_name ) );
-         */
+        nextStep = false;
 
-        orderToServer = new OrderTabAsyncTask();
-        // TODO preferences do not work for user name
-        orderToServer.execute( list.toString(), "miguel", total.toString(),
-                OrderTab.this );
+        OrderTab.this.sendToPaypal();
+        // sends data to the server
+        OrderTab.this.sendToServer();
+        OrderTab.this.orderConfirmation();
 
-        /*
-         * // waits for the confirmation number to be given while (
-         * orderToServer.getOrderNumber() == null ) { }
-         */
-
-        /*
-         * // get prompts.xml view LayoutInflater li = LayoutInflater.from(
-         * getBaseContext() ); View promptsView = li.inflate(
-         * R.layout.dialog_order_confirmed, null );
-         * 
-         * // prepare the alert box AlertDialog.Builder alertbox = new
-         * AlertDialog.Builder( OrderTab.this );
-         * 
-         * alertbox.setView( promptsView ); alertbox.setTitle( "Order Confirmed"
-         * );
-         * 
-         * // Display text prompting the user that the order was confirmed final
-         * TextView confirmationTextView; confirmationTextView = (TextView)
-         * promptsView .findViewById( R.id.orderconfirmationTextView );
-         * confirmationTextView.setText( "Your order has been confirmed" );
-         * 
-         * // TODO: display the order number final TextView orderNumberTextView;
-         * orderNumberTextView = (TextView) promptsView.findViewById(
-         * R.id.confirmationTextView ); orderNumberTextView.setText(
-         * "Order ID: " + orderToServer.getOrderNumber() );
-         * 
-         * alertbox.setPositiveButton( "Ok", new
-         * DialogInterface.OnClickListener() { public void onClick(
-         * DialogInterface arg0, int arg1 ) { // after order completion resets
-         * // the order list.clear(); total = 0.0;
-         * adapter.notifyDataSetChanged(); footer.setText( "" );
-         * button.setEnabled( false ); numberOfItemsOnPlate = 0; } } );
-         * alertbox.show();
-         */
     }
 
-    public void displayConfirmation()
+    private void sendToPaypal()
     {
-        // //////////////////////////////////////////////
-        // TODO this is where it breaks
-        // /////////////////////////////////////////////
+        Intent in = new Intent( OrderTab.this, PaypalPaymentActivity.class );
+
+        in.putExtra( "orderTotal", total );
+        // in.putExtra( "instance", OrderTab.this );
+        this.startActivity( in );
+    }
+
+    private void sendToServer()
+    {
+        SharedPreferences preference_ =
+                getSharedPreferences( getString( R.string.pref_title_file ),
+                        Context.MODE_PRIVATE );
+        String userName =
+                preference_.getString( getString( R.string.pref_title_name ),
+                        getString( R.string.pref_title_name ) );
+
+        orderToServer = new OrderTabAsyncTask();
+        orderToServer.execute( list.toString(), userName, total.toString() );
+    }
+
+    private void orderConfirmation()
+    {
+        // waits for the confirmation number to be given
+        while ( orderToServer.getOrderNumber() == null )
+        {
+        }
+
+        // // prepare the alert box
+        // AlertDialog.Builder alertbox = new AlertDialog.Builder( OrderTab.this
+        // );
+        // // set the message to display
+        // alertbox.setMessage( "Your order has been confirmed \n\nOrder ID: "
+        // + orderToServer.getOrderNumber() );
+
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from( getBaseContext() );
+        View promptsView = li.inflate( R.layout.dialog_order_confirmed, null );
+
+        // prepare the alert box
         AlertDialog.Builder alertbox = new AlertDialog.Builder( OrderTab.this );
-        // set the message to display
-        alertbox.setMessage( "Order confirmed \n\nOrderID: "
+
+        alertbox.setView( promptsView );
+        alertbox.setTitle( "Order Confirmed" );
+
+        // Display text prompting the user that the order was confirmed
+        final TextView confirmationTextView;
+        confirmationTextView =
+                (TextView) promptsView
+                        .findViewById( R.id.orderconfirmationTextView );
+        confirmationTextView.setText( "Your order has been confirmed" );
+
+        // TODO: display the order number
+        final TextView orderNumberTextView;
+        orderNumberTextView =
+                (TextView) promptsView.findViewById( R.id.confirmationTextView );
+        orderNumberTextView.setText( "Order ID: "
                 + orderToServer.getOrderNumber() );
-        // set a positive/yes button and create a listener
+
         alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
         {
-
-            /**
-             * Order confirmation dialogue
-             */
-            @SuppressWarnings( "unchecked" )
             public void onClick( DialogInterface arg0, int arg1 )
             {
                 // after order completion resets
@@ -333,16 +338,6 @@ public class OrderTab extends ListActivity implements Serializable
             }
         } );
         alertbox.show();
-
     }
 
-    public void callPaypal()
-    {
-        Intent in = new Intent( OrderTab.this, PaypalPaymentActivity.class );
-
-        in.putExtra( "orderTotal", total );
-        in.putExtra( "instance", OrderTab.this );
-        this.startActivity( in );
-
-    }
 }

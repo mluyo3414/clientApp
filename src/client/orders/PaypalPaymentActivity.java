@@ -57,7 +57,7 @@ public class PaypalPaymentActivity extends Activity
     private static final String CONFIG_RECEIVER_EMAIL =
             "mig.suarez49-facilitator@gmail.com";
 
-    private static OrderTab orderTab;
+    // private static OrderTab orderTab;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -80,7 +80,7 @@ public class PaypalPaymentActivity extends Activity
         if ( b != null )
         {
             String total = b.get( "orderTotal" ).toString();
-            orderTab = (OrderTab) b.get( "instance" );
+            //orderTab = (OrderTab) b.get( "instance" );
             this.onBuyPressed( total );
         }
     }
@@ -156,9 +156,9 @@ public class PaypalPaymentActivity extends Activity
     @Override
     public void onDestroy()
     {
+       // orderTab.orderConfirmation();
         stopService( new Intent( this, PayPalService.class ) );
         super.onDestroy();
-        orderTab.orderConfirmation();
 
     }
 }

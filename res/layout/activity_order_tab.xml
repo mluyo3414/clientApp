@@ -23,7 +23,7 @@
         android:layout_height="40dp"
         android:layout_alignBottom="@+id/Footer"
         android:gravity="left"
-        android:onClick="onMyButtonClick"
+        android:onClick="onConfirmClick"
         android:text="Confirm"
         android:textSize="22sp" />
 
