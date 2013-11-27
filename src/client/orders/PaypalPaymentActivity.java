@@ -8,25 +8,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.View;
-
-import com.example.foodnow.R;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 /**
- * @author Modified by James Modular Dagres
- * @author Modified by Carl Barbee Doll
- * @author Modified by Matt Luckam Get'Em
- * @author Modified by Miguel The Bear Suarez
+ * @author Modified by James Dagres
+ * @author Modified by Carl Barbee
+ * @author Modified by Matt Luckam
+ * @author Modified by Miguel Suarez
  * 
  *         A modified PayPal class from their sample class found here:
  *         https://github.com/paypal/PayPal-Android-SDK
  * 
- *         // TODO: All of the CAPITAL feilds involving specific login
+ *         // TODO: All of the CAPITAL fields involving specific login
  *         information have been commented out and mostly marked with a TODO. It
  *         is unsure if this contains it's own integrated paypal login, if it
  *         doesn't work or you get tripped up there is a tutorial here:
@@ -127,6 +123,10 @@ public class PaypalPaymentActivity extends Activity
                     Log.i( "paymentExample", confirm.toJSONObject()
                             .toString( 4 ) );
 
+                    OrderTab.nextStep = 1;
+                    while ( OrderTab.nextStep != 2 )
+                    {
+                    }
                     this.finish();
 
                     // TODO: send 'confirm' to your server for verification.
@@ -156,10 +156,7 @@ public class PaypalPaymentActivity extends Activity
     @Override
     public void onDestroy()
     {
-        OrderTab.nextStep = true;
-        // orderTab.orderConfirmation();
         stopService( new Intent( this, PayPalService.class ) );
         super.onDestroy();
-
     }
 }

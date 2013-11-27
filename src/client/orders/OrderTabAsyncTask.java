@@ -31,28 +31,41 @@ import com.example.foodnow.R;
 @SuppressWarnings( { "unused", "rawtypes" } )
 public class OrderTabAsyncTask extends AsyncTask
 {
-    private String orderNumber;
+    /**
+     * orderNumber received from server
+     */
+    private static String orderNumber;
 
     @Override
     protected Object doInBackground( Object... arg0 )
     {
-        while ( !OrderTab.nextStep )
+        while ( OrderTab.nextStep != 1 )
         {
             android.os.SystemClock.sleep( 5000 );
         }
 
         String order = (String) arg0[0];
-
         String name = (String) arg0[1];
-
         String total = (String) arg0[2];
 
         this.post( order, name, total );
 
-        // TODO Takes in parameters and send to the server
-        return OrderTab.nextStep = false;
+        OrderTab.nextStep = 2;
+        return null;
     }
 
+    /**
+     * posts the order, users name, and total cost on the server and receives a
+     * order number in return
+     * 
+     * @param order
+     *            order of user in string
+     * @param name
+     *            users name
+     * @param total
+     *            total cost of the order
+     * @return total
+     */
     public String post( String order, String name, String total )
     {
         // hard coded IP and port#
@@ -80,10 +93,6 @@ public class OrderTabAsyncTask extends AsyncTask
             String s = dateFormatter.format( today );
             nameValuePairs.add( new BasicNameValuePair( "location", s ) );
 
-            // add total at some point
-            // nameValuePairs.add( new BasicNameValuePair( "orderTotal", total )
-            // );
-
             post.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
 
             HttpResponse response = client.execute( post );
@@ -110,6 +119,7 @@ public class OrderTabAsyncTask extends AsyncTask
         catch ( IOException e )
         {
             data = "ERROR FROM SERVER";
+            OrderTab.nextStep = 3;
             e.printStackTrace();
         }
         return data;
@@ -134,7 +144,7 @@ public class OrderTabAsyncTask extends AsyncTask
      */
     public void setOrderNumber( String orderNumber )
     {
-        this.orderNumber = orderNumber;
+        OrderTabAsyncTask.orderNumber = orderNumber;
     }
 
 }
