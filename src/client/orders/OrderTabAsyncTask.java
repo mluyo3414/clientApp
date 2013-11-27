@@ -36,6 +36,10 @@ public class OrderTabAsyncTask extends AsyncTask
     @Override
     protected Object doInBackground( Object... arg0 )
     {
+        while ( !OrderTab.nextStep )
+        {
+            android.os.SystemClock.sleep( 5000 );
+        }
 
         String order = (String) arg0[0];
 
@@ -46,7 +50,7 @@ public class OrderTabAsyncTask extends AsyncTask
         this.post( order, name, total );
 
         // TODO Takes in parameters and send to the server
-        return null;
+        return OrderTab.nextStep = false;
     }
 
     public String post( String order, String name, String total )

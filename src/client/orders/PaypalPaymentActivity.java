@@ -80,7 +80,7 @@ public class PaypalPaymentActivity extends Activity
         if ( b != null )
         {
             String total = b.get( "orderTotal" ).toString();
-            //orderTab = (OrderTab) b.get( "instance" );
+            // orderTab = (OrderTab) b.get( "instance" );
             this.onBuyPressed( total );
         }
     }
@@ -156,7 +156,8 @@ public class PaypalPaymentActivity extends Activity
     @Override
     public void onDestroy()
     {
-       // orderTab.orderConfirmation();
+        OrderTab.nextStep = true;
+        // orderTab.orderConfirmation();
         stopService( new Intent( this, PayPalService.class ) );
         super.onDestroy();
 

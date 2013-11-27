@@ -64,7 +64,7 @@ public class OrderTab extends ListActivity
      */
     private static Double total;
 
-    private boolean nextStep;
+    public static boolean nextStep;
 
     /**
      * Called when the activity is first created
@@ -259,7 +259,8 @@ public class OrderTab extends ListActivity
         OrderTab.this.sendToPaypal();
         // sends data to the server
         OrderTab.this.sendToServer();
-        OrderTab.this.orderConfirmation();
+
+        // OrderTab.this.orderConfirmation();
 
     }
 
@@ -269,7 +270,7 @@ public class OrderTab extends ListActivity
 
         in.putExtra( "orderTotal", total );
         // in.putExtra( "instance", OrderTab.this );
-        this.startActivity( in );
+        OrderTab.this.startActivity( in );
     }
 
     private void sendToServer()
