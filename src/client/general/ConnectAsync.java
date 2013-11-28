@@ -12,6 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.content.Intent;
 import android.os.AsyncTask;
 import client.home.FromServer1;
+import client.home.HomeTab;
 import client.home.MainActivity;
 
 /**
@@ -78,8 +79,7 @@ public class ConnectAsync extends AsyncTask<String, Void, String>
             // returns responser from the server
             return parseData( data );
 
-        }
-        finally
+        } finally
         {
             if ( in != null )
             {
@@ -105,36 +105,48 @@ public class ConnectAsync extends AsyncTask<String, Void, String>
 
         ipAndPort = params[0];
 
-        // getting info from server
-        String data = "";
+        // HTTP GET
+        String url = "http://" + ipAndPort;
+        BufferedReader in = null;
+        String toReturn = null;
         try
         {
-            data = getInternetData( ipAndPort );
+            HttpClient client = new DefaultHttpClient();
+
+            URI myWebsite = new URI( url );
+
+            HttpGet request = new HttpGet( myWebsite );
+            HttpResponse response = client.execute( request );
+
+            in =
+                    new BufferedReader( new InputStreamReader( response
+                            .getEntity().getContent() ) );
+            StringBuffer sb = new StringBuffer( "" );
+            String l = "";
+            String newline = System.getProperty( "line.separator" );
+            while ( (l = in.readLine()) != null )
+            {
+                sb.append( l + newline );
+            }
+
+            toReturn = sb.toString();
+
+            in.close();
 
         }
         catch ( Exception e )
         {
-
-            e.printStackTrace();
+            // it didn’t work…
         }
 
-        return data;
+        return toReturn;
 
     }
 
     @Override
     protected void onPostExecute( String fromParseData )
     {
-
-        // calls next activity to display server response and number of users if
-        // there was a connection
-
-        Intent in = new Intent( activity_, FromServer1.class );
-
-        in.putExtra( "Data", fromParseData );
-
-        activity_.startActivity( in );
-
+        HomeTab.serverStatus = fromParseData;
     }
 
     private String parseData( String data )

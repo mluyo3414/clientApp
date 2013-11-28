@@ -65,48 +65,28 @@ public class MainActivity extends TabActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main_home );
 
+        // //////////////////////////////////////////
+        // WORKS BUT NO CHECK FOR SERVER NOT CONNECTED
+        // ///////////////////////////////////////////
         createTabs();
-
-        // LinearLayout linearLayout =
-        // (LinearLayout) findViewById( R.id.Home_Tab_View );
-        // linearLayout
-        // .setBackgroundResource( R.drawable.activity_general_background );
 
         settings_ = new SettingsPreferenceActivity();
         settingsIntention =
                 new Intent( MainActivity.this, SettingsPreferenceActivity.class );
 
-        // starts the layout objects
+        // //////////////////////////////////////////////
+        // POSSIBLE IMPLEMENTATION OF CHECKING FOR SERVER CONNECTION
+        // //////////////////////////////////////////////
+        // TODO can not get client to fail if server is not up possibly scrap
+        // this
         /*
-         * ipAddress = (EditText) findViewById( R.id.IpAddress ); portNumber =
-         * (EditText) findViewById( R.id.IpPort ); connectButton = (Button)
-         * findViewById( R.id.connectButton ); status = (TextView) findViewById(
-         * R.id.connectionStatus );
+         * if ( !connectServerSettings() ) { alertUserServerIsNotConnected();
+         * 
+         * MainActivity.this.startActivity( settingsIntention ); } else {
+         * connectedToServer_ = true;
+         * 
+         * // Final destination for this item createTabs(); }
          */
-
-        // TODO: Need to test this
-        // Attempt to connect to the server with the saved settings if it
-        // fails then display the settings menu to get the port and IP
-        // number If it succeeds then continue to display the main menu
-        if ( connectServerSettings() ) // removed !
-        {
-            alertUserServerIsNotConnected();
-
-            // Start the settings activity
-            /*
-             * Intent settingsIntention = new Intent( MainActivity.this,
-             * SettingsPreferenceActivity.class );
-             */
-
-            MainActivity.this.startActivity( settingsIntention );
-        }
-        else
-        {
-            connectedToServer_ = true;
-
-            // Final destination for this item
-            // createTabs();
-        }
 
     }
 
@@ -120,11 +100,10 @@ public class MainActivity extends TabActivity
      */
     private boolean connectServerSettings()
     {
-        boolean ipAndPortValuesSet = settings_.iPandPortValueAreSet();
-        if ( ipAndPortValuesSet ) // TODO: test
+        if ( attemptServerConnection() ) // TODO: test
         {
             // Attempt to connect
-            return attemptServerConnection();
+            return true;
         }
 
         return false;
@@ -195,14 +174,18 @@ public class MainActivity extends TabActivity
         {
             // get values from Text edit
             myActivity = new ConnectAsync( MainActivity.this );
-            stringPort = portNumber.getText().toString();
-            stringIP = ipAddress.getText().toString();
 
-            IPandPort = stringIP + ":" + stringPort;
-
-            // start async task
+            IPandPort = "54.201.86.1032:8080";
             myActivity.execute( IPandPort );
-            return true;
+
+            if ( HomeTab.serverStatus.startsWith( "Hello from the Server," ) )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         catch ( Exception ex )
         {
@@ -257,7 +240,7 @@ public class MainActivity extends TabActivity
     {
         super.onResume();
 
-        if ( !connectedToServer_ )
+        if ( !connectServerSettings() )
         {
             alertUserServerIsNotConnected();
         }

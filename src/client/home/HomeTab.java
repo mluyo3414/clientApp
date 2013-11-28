@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 public class HomeTab extends Activity
 {
+    public static String serverStatus;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -20,6 +21,7 @@ public class HomeTab extends Activity
         textView.setText( "Location: 117A Lavery Hall\n" );
         textView.append( "                  Blacksburg, VA 24061 \n\n" );
         textView.append( "Hours: Mon–Fri 10:30am–10:00pm" );
+        textView.append( "/n/n/n" + serverStatus );
 
     }
 

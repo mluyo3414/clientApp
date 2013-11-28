@@ -6,31 +6,17 @@
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact based on your message history</string>
     <string name="pref_title_file">pref_general</string>
-    <string name="pref_title_ip">IP</string>
     <string name="pref_title_name">Display Name</string>
     <string name="pref_title_payment">Payment Method</string>
-    <string name="pref_title_port">Port</string>
-    <string name="pref_title_home_location">Home Location</string>
     <string name="pref_title_phone_number">Phone Number</string>
-    <string name="pref_time_location">Home Restaurant</string>
 
     <!-- Value String -->
     <string name="pref_default_name">Insert Name</string>
-    <string name="pref_default_port">Port</string>
-    <string name="pref_default_ip">IP</string>
-    <string name="pref_default_payment">None</string>
     <string name="pref_default_phone_number">None</string>
-    <string name="pref_default_location">Virginia Tech, Blacksburg</string>
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string name="settings_title">Settings</string>
 
     <string-array name="settings_array">
         <item>Name</item>
         <item>Phone Number</item>
-        <item>Payment</item>
-        <item>Home Location</item>
-        <item>Port</item>
-        <item>IP</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->

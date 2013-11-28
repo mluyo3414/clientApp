@@ -69,7 +69,7 @@ public class OrderTabAsyncTask extends AsyncTask
     public String post( String order, String name, String total )
     {
         // hard coded IP and port#
-        String IPandPort = "192.168.1.12:8080";
+        String IPandPort = "54.201.86.103:8080";
 
         // posting to server
         HttpClient client = new DefaultHttpClient();
