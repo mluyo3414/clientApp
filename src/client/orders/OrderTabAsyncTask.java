@@ -91,7 +91,7 @@ public class OrderTabAsyncTask extends AsyncTask
             dateFormatter.setLenient( false );
             Date today = new Date();
             String s = dateFormatter.format( today );
-            nameValuePairs.add( new BasicNameValuePair( "location", s ) );
+            nameValuePairs.add( new BasicNameValuePair( "time", s ) );
 
             // adds total
             nameValuePairs.add( new BasicNameValuePair( "total", total ) );

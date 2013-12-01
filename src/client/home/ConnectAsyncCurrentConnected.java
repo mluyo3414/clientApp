@@ -78,7 +78,7 @@ public class ConnectAsyncCurrentConnected extends
 			dateFormatter.setLenient(false);
 			Date today = new Date();
 			String s = dateFormatter.format(today);
-			nameValuePairs.add( new BasicNameValuePair( "location",  s  ) );
+			nameValuePairs.add( new BasicNameValuePair( "time",  s  ) );
 			post.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
 
 			HttpResponse response = client.execute( post );
