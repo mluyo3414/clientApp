@@ -22,11 +22,22 @@ import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.telephony.TelephonyManager;
 
 import client.home.MainActivity;
 
 import com.example.foodnow.R;
 
+/**
+ * 
+ * @author Miguel Suarez
+ * @author James Dagres
+ * @author Carl Barbee
+ * @author Matt Luckam
+ * 
+ *         After an order is payed for the order details are sent to the server
+ *         and an order confirmation number is received from the server.
+ */
 @SuppressLint( "SimpleDateFormat" )
 @SuppressWarnings( { "unused", "rawtypes" } )
 public class OrderTabAsyncTask extends AsyncTask
@@ -47,8 +58,9 @@ public class OrderTabAsyncTask extends AsyncTask
         String order = (String) arg0[0];
         String name = (String) arg0[1];
         String total = (String) arg0[2];
+        String phoneNumber = (String) arg0[3];
 
-        this.post( order, name, total );
+        this.post( order, name, total, phoneNumber );
 
         OrderTab.nextStep = 2;
         return null;
@@ -66,10 +78,11 @@ public class OrderTabAsyncTask extends AsyncTask
      *            total cost of the order
      * @return total
      */
-    public String post( String order, String name, String total )
+    public String post( String order, String name, String total,
+            String phoneNumber )
     {
         // hard coded IP and port#
-        String IPandPort = "54.201.86.103:8080";
+        String IPandPort = "172.31.172.58:8080";// 54.201.86.103:8080";
 
         // posting to server
         HttpClient client = new DefaultHttpClient();
@@ -96,6 +109,9 @@ public class OrderTabAsyncTask extends AsyncTask
             // adds total
             nameValuePairs.add( new BasicNameValuePair( "total", total ) );
 
+            // adds phone number
+            nameValuePairs.add( new BasicNameValuePair( "phone", phoneNumber ) );
+
             post.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
 
             HttpResponse response = client.execute( post );
@@ -114,7 +130,7 @@ public class OrderTabAsyncTask extends AsyncTask
             rd.close();
             data = sb.toString();
 
-            setOrderNumber( data );
+            orderNumber = data;
 
             // get client.orders status
             return (data);
@@ -122,7 +138,6 @@ public class OrderTabAsyncTask extends AsyncTask
         catch ( IOException e )
         {
             data = "ERROR FROM SERVER";
-            OrderTab.nextStep = 3;
             e.printStackTrace();
         }
         return data;
@@ -138,16 +153,4 @@ public class OrderTabAsyncTask extends AsyncTask
     {
         return orderNumber;
     }
-
-    /**
-     * Sets the order number
-     * 
-     * @param orderNumber
-     *            order number
-     */
-    public void setOrderNumber( String orderNumber )
-    {
-        OrderTabAsyncTask.orderNumber = orderNumber;
-    }
-
 }

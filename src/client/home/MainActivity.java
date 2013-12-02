@@ -1,11 +1,17 @@
 package client.home;
 
+import java.nio.channels.ClosedByInterruptException;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,33 +37,31 @@ import com.example.foodnow.R;
  * @author Carl Barbee
  * @author Matt Luckam
  * 
- *         This is the first Activity where the client inputs the IP and port.
+ *         Activity that contains the 3 tabs ( HomeTab, MenuTab, and OrderTab )
+ *         of the GUI and ConnectAsync. This class builds the 3 tabs and
+ *         launches ConnectAsync to determine if the server is running. If the
+ *         server is not running an alertbox notifies the user of this and then
+ *         closes the app.
  * 
  */
 @SuppressWarnings( { "unused", "deprecation" } )
 public class MainActivity extends TabActivity
 {
-    EditText ipAddress;
-    EditText portNumber;
-    Button connectButton;
-
-    private String stringIP; // TODO: remove
-    private String stringPort;
-
-    static String IPandPort;
     ConnectAsync myActivity;
-    TextView status;
+
+    // ////////////////////////////
+    // possibly unneeded
 
     /**
      * settings menu Intent
      */
-    Intent settingsIntention;
-
-    // Keeps track of whether the server is available
-    private boolean connectedToServer_ = false;
-
-    // Instance to the settings activity
+    private Intent settingsIntention;
+    /**
+     * Instance to the settings activity
+     */
     private SettingsPreferenceActivity settings_;
+
+    // ////////////////////////////
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -65,48 +69,38 @@ public class MainActivity extends TabActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main_home );
 
-        // //////////////////////////////////////////
-        // WORKS BUT NO CHECK FOR SERVER NOT CONNECTED
-        // ///////////////////////////////////////////
-        createTabs();
+        // createTabs();
+        // ////////////////////////////////
+        // possibly unneeded
+        // ///////////////////////////////
+        checkSettings();
 
-        settings_ = new SettingsPreferenceActivity();
-        settingsIntention =
-                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
-
-        // //////////////////////////////////////////////
-        // POSSIBLE IMPLEMENTATION OF CHECKING FOR SERVER CONNECTION
-        // //////////////////////////////////////////////
-        // TODO can not get client to fail if server is not up possibly scrap
-        // this
-        /*
-         * if ( !connectServerSettings() ) { alertUserServerIsNotConnected();
-         * 
-         * MainActivity.this.startActivity( settingsIntention ); } else {
-         * connectedToServer_ = true;
-         * 
-         * // Final destination for this item createTabs(); }
-         */
+        isServerOn();
 
     }
 
     /**
-     * This function checks to see if IP and Server information has been saved
-     * in the settings profile if they are saved then try and connect to the
-     * server, if connection is successful then return true. If not then return
-     * false
+     * Attempts to connect to the server, if successful then the app is
+     * launched, else it an alertbox is alerts the user the server is not active
+     * and the app is closed
      * 
-     * @return the status of the server connection
+     * @return the result of the server connection attempt
      */
-    private boolean connectServerSettings()
+    private void isServerOn()
     {
-        if ( attemptServerConnection() ) // TODO: test
+        try
         {
-            // Attempt to connect
-            return true;
-        }
+            // get values from Text edit
+            myActivity = new ConnectAsync( MainActivity.this );
 
-        return false;
+            String IPandPort = "172.31.172.58:8080"; // 54.201.86.1032:8080"; //
+            myActivity.execute( IPandPort );
+        }
+        catch ( Exception ex )
+        {
+            System.err.print( "Error connecting to the server: " + ex );
+            finish();
+        }
     }
 
     @Override
@@ -117,6 +111,9 @@ public class MainActivity extends TabActivity
         return true;
     }
 
+    // ////////////////////////////////
+    // possibly unneeded
+    // ///////////////////////////////
     @Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
@@ -131,71 +128,9 @@ public class MainActivity extends TabActivity
     }
 
     /**
-     * Sets up and handles the button event
+     * creates the 3 tabs ( HomeTab, MenuTab, OrderTab ) and starts the app
      */
-    @SuppressLint( "NewApi" )
-    @TargetApi( Build.VERSION_CODES.GINGERBREAD )
-    public void buttonPressed()
-    {
-        connectButton.setOnClickListener( new View.OnClickListener()
-        {
-            public void onClick( View view )
-            {
-                // if fields are not empty
-                if ( (!ipAddress.getText().toString().isEmpty()) &&
-
-                (!portNumber.getText().toString().isEmpty()) )
-                {
-                    // // get values from Text edit
-                    // myActivity = new ConnectAsync( MainActivity.this );
-                    // stringPort = portNumber.getText().toString();
-                    // stringIP = ipAddress.getText().toString();
-                    //
-                    // IPandPort = stringIP + ":" + stringPort;
-                    // // start async task
-                    // myActivity.execute( IPandPort );
-
-                    attemptServerConnection();
-                }
-            }
-        } );
-
-    }
-
-    /**
-     * Attempts to connect to the server, if successful then it returns true,
-     * else it returns false
-     * 
-     * @return the result of the server connection attempt
-     */
-    private boolean attemptServerConnection()
-    {
-        try
-        {
-            // get values from Text edit
-            myActivity = new ConnectAsync( MainActivity.this );
-
-            IPandPort = "54.201.86.1032:8080";
-            myActivity.execute( IPandPort );
-
-            if ( HomeTab.serverStatus.startsWith( "Hello from the Server," ) )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        catch ( Exception ex )
-        {
-            System.err.print( "Error connecting to the server: " + ex );
-        }
-
-        return false;
-    }
-
-    private void createTabs()
+    public void createTabs()
     {
         TabHost tabHost = getTabHost();
 
@@ -227,33 +162,39 @@ public class MainActivity extends TabActivity
         tabHost.setCurrentTab( 1 );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see android.app.ActivityGroup#onResume()
-     * 
-     * Overrides the resume in order to raise a toast if it's not connected to
-     * the server
-     */
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-
-        if ( !connectServerSettings() )
-        {
-            alertUserServerIsNotConnected();
-        }
-    }
-
     /**
-     * Raises a toast informing the user that the application is not connected
-     * successfully to the server.
+     * Raises an alertbox informing the user that the server is not active and
+     * then closes
      */
-    private void alertUserServerIsNotConnected()
+    public void alertUserServerIsNotConnected()
     {
-        Toast.makeText( getApplicationContext(),
-                "Not connected to server, check the settings.",
-                Toast.LENGTH_LONG ).show();
+
+        // prepare the alert box
+        AlertDialog.Builder alertbox =
+                new AlertDialog.Builder( MainActivity.this );
+        // set the message to display
+        alertbox.setMessage( "The server is currently not on, sorry for the inconvenience.\nPlease try again shortly." );
+        // set a positive/yes button and create a listener
+        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
+        {
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
+                MainActivity.this.finish();
+            }
+        } );
+        alertbox.show();
     }
+
+    // ////////////////////////////////
+    // possibly unneeded
+    // ///////////////////////////////
+    private void checkSettings()
+    {
+        settings_ = new SettingsPreferenceActivity();
+        settingsIntention =
+                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
+        MainActivity.this.startActivity( settingsIntention );
+
+    }
+
 }

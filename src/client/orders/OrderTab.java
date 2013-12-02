@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,21 @@ import android.widget.Toast;
 
 import com.example.foodnow.R;
 
+/**
+ * 
+ * @author Miguel Suarez
+ * @author James Dagres
+ * @author Carl Barbee
+ * @author Matt Luckam
+ * 
+ *         Tab contains all the items the user has added to their order and a
+ *         total of that order in US dollars. If an item in the order is clicked
+ *         it allows the user to remove it from their order. If the confirm
+ *         button is pushed it will send the user to paypal to pay for their
+ *         order. A confirmation alertbox with order number is shown when a user
+ *         has sucesfully completed their order.
+ * 
+ */
 @SuppressWarnings( { "unused", "unchecked" } )
 public class OrderTab extends ListActivity
 {
@@ -142,7 +158,7 @@ public class OrderTab extends ListActivity
                 AlertDialog.Builder alertbox =
                         new AlertDialog.Builder( OrderTab.this );
                 // set the message to display
-                alertbox.setMessage( "Confirm your order?" );
+                alertbox.setMessage( "¿Confirm your order?" );
                 // set a positive/yes button and create a listener
                 alertbox.setPositiveButton( "Yes",
                         new DialogInterface.OnClickListener()
@@ -231,8 +247,20 @@ public class OrderTab extends ListActivity
                 preference_.getString( getString( R.string.pref_title_name ),
                         getString( R.string.pref_title_name ) );
 
+        /*
+         * String phoneNumber = preference_.getString( getString(
+         * R.string.pref_title_phone_number ), getString(
+         * R.string.pref_title_phone_number ) );
+         */
+        TelephonyManager mTelephonyMgr;
+        mTelephonyMgr =
+                (TelephonyManager) getSystemService( Context.TELEPHONY_SERVICE );
+
+        String phoneNumber = mTelephonyMgr.getLine1Number();
+
         orderToServer = new OrderTabAsyncTask();
-        orderToServer.execute( list.toString(), userName, total.toString() );
+        orderToServer.execute( list.toString(), userName, total.toString(),
+                phoneNumber );
     }
 
     /**
@@ -291,7 +319,7 @@ public class OrderTab extends ListActivity
         {
             total +=
                     Double.parseDouble( list.get( i ).substring(
-                            list.get( i ).indexOf( "$" ) + 1) );
+                            list.get( i ).indexOf( "$" ) + 1 ) );
 
         }
         footer.setTextSize( 25 );

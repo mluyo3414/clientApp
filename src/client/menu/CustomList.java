@@ -10,6 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * 
+ * @author Miguel Suarez
+ * @author James Dagres
+ * @author Carl Barbee
+ * @author Matt Luckam
+ * 
+ *         Custom static listview. Each list item contains both an image and
+ *         text.
+ */
 public class CustomList extends ArrayAdapter<String>
 {
 

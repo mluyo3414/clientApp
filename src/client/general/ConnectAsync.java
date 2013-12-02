@@ -8,10 +8,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import client.home.FromServer1;
 import client.home.HomeTab;
 import client.home.MainActivity;
 
@@ -27,15 +27,17 @@ import client.home.MainActivity;
  */
 public class ConnectAsync extends AsyncTask<String, Void, String>
 {
-
-    protected String ipAndPort;
-    // main activity to call back
-    MainActivity activity_;
+    /**
+     * main activity to call back
+     */
+    private MainActivity activity_;
 
     /**
      * 
+     * Constructor that takes in an instance of the class that called it
+     * 
      * @param mainActivity
-     *            ConnectAsync constructor
+     *            instance of the class that called this class
      */
     public ConnectAsync( client.home.MainActivity mainActivity )
     {
@@ -44,66 +46,15 @@ public class ConnectAsync extends AsyncTask<String, Void, String>
     }
 
     /**
+     * Performs an HTTPGET to verify the server is active
      * 
-     * @param IPAndPort
-     * @return response from server
-     * @throws Exception
+     * @return toReturn returns a value if the server is active, otherwise null
      */
-    public String getInternetData( String IPAndPort ) throws Exception
-    {
-        BufferedReader in = null;
-        String data = "";
-        try
-        {
-            // setup http client
-            HttpClient client = new DefaultHttpClient();
-            // process data from
-            URI website = new URI( "http://" + IPAndPort );
-            // request using get method
-            HttpGet request = new HttpGet( website );
-            HttpResponse response = client.execute( request );
-            // string using buffered reader
-            // streamreader bytes into characters
-            in =
-                    new BufferedReader( new InputStreamReader( response
-                            .getEntity().getContent() ) );
-            StringBuffer sb = new StringBuffer( "" );
-            String l = "";
-            String newline = System.getProperty( "line.separator" );
-            while ( (l = in.readLine()) != null )
-            {
-                sb.append( l + newline );
-            }
-            in.close();
-            data = sb.toString();
-            // returns responser from the server
-            return parseData( data );
-
-        } finally
-        {
-            if ( in != null )
-            {
-                try
-                {
-                    in.close();
-                    return parseData( data );
-
-                }
-                catch ( Exception e )
-                {
-                    e.printStackTrace();
-
-                }
-
-            }
-        }
-    }
-
     @Override
     protected String doInBackground( String... params )
     {
 
-        ipAndPort = params[0];
+        String ipAndPort = params[0];
 
         // HTTP GET
         String url = "http://" + ipAndPort;
@@ -112,6 +63,11 @@ public class ConnectAsync extends AsyncTask<String, Void, String>
         try
         {
             HttpClient client = new DefaultHttpClient();
+
+            // sets a 5 second timeout on the server
+            HttpParams httpParams = client.getParams();
+            HttpConnectionParams.setConnectionTimeout( httpParams, 5000 );
+            HttpConnectionParams.setSoTimeout( httpParams, 5000 );
 
             URI myWebsite = new URI( url );
 
@@ -136,24 +92,36 @@ public class ConnectAsync extends AsyncTask<String, Void, String>
         }
         catch ( Exception e )
         {
-            // it didn’t work…
+            e.printStackTrace();
         }
 
         return toReturn;
 
     }
 
+    /**
+     * if correct string is received from the server that app is opened,
+     * otherwise the app notifies the user that the server is not active and
+     * closes the app
+     * 
+     * @param serverResponse
+     *            string received from the server, null if the server times out
+     */
     @Override
-    protected void onPostExecute( String fromParseData )
+    protected void onPostExecute( String serverResponse )
     {
-        HomeTab.serverStatus = fromParseData;
-    }
+        if ( serverResponse != null
+                && serverResponse.startsWith( "Hello from the Server," ) )
+        {
+            // start tabs
+            HomeTab.serverStatus = serverResponse;
+            activity_.createTabs();
 
-    private String parseData( String data )
-    {
-
-        // check if server is up
-
-        return data;
+        }
+        else
+        {
+            // kill the app
+            activity_.alertUserServerIsNotConnected();
+        }
     }
 }

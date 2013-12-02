@@ -18,21 +18,10 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
  * @author Modified by Carl Barbee
  * @author Modified by Matt Luckam
  * @author Modified by Miguel Suarez
- * 
- *         A modified PayPal class from their sample class found here:
- *         https://github.com/paypal/PayPal-Android-SDK
- * 
- *         // TODO: All of the CAPITAL fields involving specific login
- *         information have been commented out and mostly marked with a TODO. It
- *         is unsure if this contains it's own integrated paypal login, if it
- *         doesn't work or you get tripped up there is a tutorial here:
- *         http://www
- *         .androiddevelopersolution.com/2012/09/paypal-integration-in-
- *         android.html
- * 
- * 
  * @version Nov 8, 2013
  * 
+ *          A modified PayPal class from their sample class found here:
+ *          https://github.com/paypal/PayPal-Android-SDK
  */
 public class PaypalPaymentActivity extends Activity
 {

@@ -12,6 +12,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
+/**
+ * 
+ * @author Miguel Suarez
+ * @author James Dagres
+ * @author Carl Barbee
+ * @author Matt Luckam
+ * 
+ *         Tab that contains menu items in a list. Each menu items contains an
+ *         image and text. When a menu item is clicked, and alertbox allows the
+ *         user to add this item to their order.
+ */
 public class MenuTab extends Activity
 {
     /**
@@ -25,7 +36,7 @@ public class MenuTab extends Activity
     private OrderTab orderTab;
 
     /**
-     * alter confirming an addition to your plate
+     * alter confirming an addition to your order
      */
     private AlertDialog.Builder alertbox;
 
@@ -64,12 +75,16 @@ public class MenuTab extends Activity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_menu_tab );
 
-        this.addToPlate();
+        this.addToOrder();
 
         this.displayMenu();
 
     }
 
+    /**
+     * Displays the menu. It is a custom listview with an image and text for
+     * each menu item.
+     */
     private void displayMenu()
     {
         // displays menu list
@@ -89,12 +104,17 @@ public class MenuTab extends Activity
         } );
     }
 
-    private void addToPlate()
+    /**
+     * Allows users to add items from the menu to their order. When an item is
+     * clicked on an alertbox asks the user if they would like to add this item
+     * to their order with options yes and no.
+     */
+    private void addToOrder()
     {
         // prepare the alert box
         alertbox = new AlertDialog.Builder( MenuTab.this );
         // set the message to display
-        alertbox.setMessage( "¿Add to Plate?" );
+        alertbox.setMessage( "¿Add to Order?" );
         // set a positive/yes button and create a listener
         alertbox.setPositiveButton( "Yes",
                 new DialogInterface.OnClickListener()
@@ -108,7 +128,7 @@ public class MenuTab extends Activity
                                 .addItems( MenuTab.this.web[MenuTab.this.currentNumber] );
 
                         Toast.makeText( getApplicationContext(),
-                                "The item was added to your plate",
+                                "The item was added to your order",
                                 Toast.LENGTH_SHORT ).show();
                     }
                 } );
@@ -123,10 +143,9 @@ public class MenuTab extends Activity
             public void onClick( DialogInterface arg0, int arg1 )
             {
                 Toast.makeText( getApplicationContext(),
-                        "The item was NOT added to your plate",
+                        "The item was NOT added to your order",
                         Toast.LENGTH_SHORT ).show();
             }
         } );
-
     }
 }
