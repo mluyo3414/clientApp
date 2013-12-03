@@ -1,28 +1,18 @@
 package client.home;
 
-import java.nio.channels.ClosedByInterruptException;
-
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
-import android.widget.TextView;
-import android.widget.Toast;
 import client.general.ConnectAsync;
 import client.general.SettingsPreferenceActivity;
 import client.menu.MenuTab;
@@ -69,24 +59,27 @@ public class MainActivity extends TabActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main_home );
 
+//        settings_ = new SettingsPreferenceActivity(this  );
+        settings_ = new SettingsPreferenceActivity(  );
+        initializeSettingsActivity();
+
         // createTabs();
         // ////////////////////////////////
         // possibly unneeded
         // ///////////////////////////////
-        checkSettings();
+        // initializeSettingsActivity();
 
-        isServerOn();
-
+        // isServerOn();
     }
 
     /**
      * Attempts to connect to the server, if successful then the app is
      * launched, else it an alertbox is alerts the user the server is not active
-     * and the app is closed
+     * and the application is closed
      * 
      * @return the result of the server connection attempt
      */
-    private void isServerOn()
+    public void isServerOn()
     {
         try
         {
@@ -175,26 +168,26 @@ public class MainActivity extends TabActivity
         // set the message to display
         alertbox.setMessage( "The server is currently not on, sorry for the inconvenience.\nPlease try again shortly." );
         // set a positive/yes button and create a listener
-        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
-        {
-            public void onClick( DialogInterface arg0, int arg1 )
-            {
-                MainActivity.this.finish();
-            }
-        } );
+        alertbox.setPositiveButton( "Ok",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface arg0, int arg1 )
+                    {
+                        MainActivity.this.finish();
+                    }
+                } );
         alertbox.show();
     }
 
     // ////////////////////////////////
     // possibly unneeded
     // ///////////////////////////////
-    private void checkSettings()
+    private void initializeSettingsActivity()
     {
-        settings_ = new SettingsPreferenceActivity();
         settingsIntention =
-                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
+                new Intent( MainActivity.this,
+                        SettingsPreferenceActivity.class );
         MainActivity.this.startActivity( settingsIntention );
-
     }
 
 }

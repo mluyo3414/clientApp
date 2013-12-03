@@ -9,7 +9,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,8 +19,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import client.home.MainActivity;
 
 import com.example.foodnow.R;
 
@@ -30,7 +34,7 @@ import com.example.foodnow.R;
  * 
  * @version Nov 8, 2013
  * 
- *          This activity displays a list of all of the setting preferecnes.
+ *          This activity displays a list of all of the setting preferences.
  *          When selected a dialog appears allowing the user to change the
  *          setting. Each setting is stored in a non volatile shared preference
  *          file.
@@ -43,6 +47,19 @@ public class SettingsPreferenceActivity extends Activity
     // Common handles to the preference file
     SharedPreferences preference_;
     SharedPreferences.Editor preferenceEditor_;
+
+    // Reference to the parent activity
+    MainActivity parentActivity_;
+
+    // /**
+    // * Constructor sets the parent activity handle.
+    // *
+    // * @param mainActivity
+    // */
+    // public SettingsPreferenceActivity( MainActivity mainActivity )
+    // {
+    // parentActivity_ = mainActivity;
+    // }
 
     /**
      * @return the name saved in the preferences
@@ -85,6 +102,17 @@ public class SettingsPreferenceActivity extends Activity
         }
 
         initializeSettingsList();
+
+        // TODO: Hack
+        updatePreference( getString( R.string.pref_default_phone_number ),
+                getString( R.string.pref_default_phone_number ) );
+        updatePreference( getString( R.string.pref_default_name ),
+                getString( R.string.pref_default_name ) );
+
+        // Makes sure a proper phone number is set
+        checkForValidPhoneNumber();
+
+        checkForValidName();
     }
 
     /**
@@ -126,13 +154,14 @@ public class SettingsPreferenceActivity extends Activity
      * 
      * @param positionOfSettingToUpdate
      */
-    private void
+    public void
             handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
     {
         switch ( positionOfSettingToUpdate )
         {
         case 0: // The name preference
-            displayUpdateSettingsDialog( getString( R.string.pref_title_name ),
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_name ),
                     preference_.getString(
                             getString( R.string.pref_title_name ),
                             getString( R.string.pref_title_name ) ) );
@@ -146,11 +175,90 @@ public class SettingsPreferenceActivity extends Activity
                             getString( R.string.pref_title_phone_number ) ) );
             break;
 
-        case 2: // The payment preference
-            // TODO: Call a unique payment dialog and Integrate paypal
+        case 2: // The payment method preference
+            displayPaymentDialog(
+                    getString( R.string.pref_title_payment ),
+                    preference_.getString(
+                            getString( R.string.pref_title_payment ),
+                            getString( R.string.pref_title_payment ) ) );
             break;
         }
 
+    }
+
+    /**
+     * This function uses a dialog containing a radiogroup, it performs almost
+     * the same as the displayUpdateSettingsDialog except it's designed for the
+     * payment button. It creates a reference to the PayPal radioButton called
+     * "payPalRadioButton" and if PayPal is the current selection then is checks
+     * that option. Furthermore when then Ok button is selected it checks to see
+     * if the payPalRadioButton is checked and updates the payment preference
+     * accordingly.
+     * 
+     * @param settingsToBeUpdated
+     * @param currentStringForTheSetting
+     */
+    private void displayPaymentDialog( final String settingsToBeUpdated,
+            String currentStringForTheSetting )
+    {
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from( getBaseContext() );
+        View promptsView = li.inflate( R.layout.dialog_payment_settings, null );
+
+        AlertDialog.Builder alertDialogBuilder =
+                new AlertDialog.Builder( this );
+
+        // set prompts.xml to alert dialog builder and sets the title
+        alertDialogBuilder.setView( promptsView );
+        alertDialogBuilder.setTitle( "Update Payment Method" );
+
+        final RadioButton payPalRadioButton =
+                (RadioButton) promptsView.findViewById( R.id.paypalRadio );
+
+        payPalRadioButton
+                .setChecked( getString( R.string.title_paypal_payment )
+                        .contains( currentStringForTheSetting ) );
+
+        alertDialogBuilder
+                .setCancelable( false )
+                .setPositiveButton( "OK",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                String newSettings;
+
+                                if ( payPalRadioButton.isChecked() )
+                                {
+                                    newSettings =
+                                            getString( R.string.title_paypal_payment );
+                                }
+                                else
+                                {
+                                    newSettings =
+                                            getString( R.string.title_payatpickup_payment );
+                                }
+
+                                updatePreference( settingsToBeUpdated,
+                                        newSettings );
+                            }
+                        } )
+                .setNegativeButton( "Cancel",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                dialog.cancel();
+                            }
+                        } );
+
+        // Create the alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // Show the dialog
+        alertDialog.show();
     }
 
     /**
@@ -162,14 +270,16 @@ public class SettingsPreferenceActivity extends Activity
      *            this is the string the dialog will list is being updated
      * @param currentStringForTheSetting
      */
-    private void displayUpdateSettingsDialog( final String settingsToBeUpdated,
+    private void displayUpdateSettingsDialog(
+            final String settingsToBeUpdated,
             String currentStringForTheSetting )
     {
         // get prompts.xml view
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
         View promptsView = li.inflate( R.layout.dialog_update_settings, null );
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( this );
+        AlertDialog.Builder alertDialogBuilder =
+                new AlertDialog.Builder( this );
 
         // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
@@ -177,7 +287,9 @@ public class SettingsPreferenceActivity extends Activity
 
         // Display text with the settings to be updated.
         final TextView tv1;
-        tv1 = (TextView) promptsView.findViewById( R.id.updateSettingsText );
+        tv1 =
+                (TextView) promptsView
+                        .findViewById( R.id.updateSettingsText );
         tv1.setText( "New " + settingsToBeUpdated + ":" );
 
         // Display the current settings in the edit text box
@@ -189,20 +301,22 @@ public class SettingsPreferenceActivity extends Activity
         // set dialog message
         alertDialogBuilder
                 .setCancelable( false )
-                .setPositiveButton( "OK", new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface dialog, int id )
-                    {
-                        String newSettingsValue =
-                                result.getText().toString().trim();
-
-                        if ( !"".equals( newSettingsValue ) )
+                .setPositiveButton( "OK",
+                        new DialogInterface.OnClickListener()
                         {
-                            updatePreference( settingsToBeUpdated,
-                                    newSettingsValue );
-                        }
-                    }
-                } )
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                String newSettingsValue =
+                                        result.getText().toString().trim();
+
+                                if ( !"".equals( newSettingsValue ) )
+                                {
+                                    updatePreference( settingsToBeUpdated,
+                                            newSettingsValue );
+                                }
+                            }
+                        } )
                 .setNegativeButton( "Cancel",
                         new DialogInterface.OnClickListener()
                         {
@@ -226,19 +340,26 @@ public class SettingsPreferenceActivity extends Activity
      * @param preferenceToUpdate
      * @param newPreferenceValue
      */
-    private void updatePreference( String preferenceToUpdate,
+    public void updatePreference( String preferenceToUpdate,
             String newPreferenceValue )
     {
         preferenceEditor_.putString( preferenceToUpdate, newPreferenceValue );
 
         preferenceEditor_.commit();
-        Toast.makeText( getApplicationContext(),
-                preferenceToUpdate + " has been updated.", Toast.LENGTH_SHORT )
+        Toast.makeText(
+                getApplicationContext(),
+                preferenceToUpdate + " has been updated to: "
+                        + newPreferenceValue, Toast.LENGTH_SHORT )
                 .show();
 
         preference_ =
                 getSharedPreferences( getString( R.string.pref_title_file ),
                         Context.MODE_PRIVATE );
+        
+        if(allPreferencesSet())
+        {
+            parentActivity_.isServerOn();
+        }
     }
 
     /**
@@ -271,5 +392,114 @@ public class SettingsPreferenceActivity extends Activity
         {
             return true;
         }
+    }
+
+    /**
+     * Checks to see if a phone number has been set that's not the default
+     * 
+     * @return whether a custom phone number has been entered
+     */
+    public boolean isPhoneNumberPrefernceSet()
+    {
+        return !getString( R.string.pref_title_phone_number ).contains(
+                preference_.getString(
+                        getString( R.string.pref_title_phone_number ),
+                        getString( R.string.pref_title_phone_number ) ) );
+    }
+
+    /**
+     * Checks to see if a name has been set that's not the default
+     * 
+     * @return whether a custom name has been entered
+     */
+    public boolean isNamePreferenceSet()
+    {
+        return !getString( R.string.pref_title_name ).contains(
+                preference_.getString(
+                        getString( R.string.pref_title_name ),
+                        getString( R.string.pref_title_name ) ) );
+    }
+
+    private void checkForValidName()
+    {
+        // TODO:
+
+        if ( !isNamePreferenceSet() )
+        {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Please enter a valid name.",
+                    Toast.LENGTH_SHORT ).show();
+
+            handleUpdatePreferenceSelection( 0 );
+        }
+    }
+
+    /**
+     * Checks to make sure a valid phone number is entered, if it's not entered
+     * then it checks to see if the current device is a tablet. If it is a
+     * tablet then bring up the settings for the user to enter their phone
+     * number. Else it's a phone, so set the phone number preference to the
+     * device's phone number.
+     */
+    private void checkForValidPhoneNumber()
+    {
+        // Check to see if a phone number preference is saved other than the
+        // default
+        if ( !isPhoneNumberPrefernceSet() )
+        {
+            // If the current device is a tablet the
+            if ( isTablet( this ) )
+            {
+                // Tell the user they need to enter a valid phone number
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Please enter a valid phone number.",
+                        Toast.LENGTH_SHORT ).show();
+
+                handleUpdatePreferenceSelection( 1 );
+            }
+            else
+            {
+                TelephonyManager mTelephonyMgr;
+                mTelephonyMgr =
+                        (TelephonyManager) getSystemService( Context.TELEPHONY_SERVICE );
+
+                String phoneNumber = mTelephonyMgr.getLine1Number();
+
+                updatePreference(
+                        getString( R.string.pref_title_phone_number ),
+                        phoneNumber );
+            }
+        }
+    }
+
+    /**
+     * @param context
+     * @return if it's a tablet or not
+     */
+    public static boolean isTablet( Context context )
+    {
+        return (context.getResources().getConfiguration().screenLayout
+        & Configuration.SCREENLAYOUT_SIZE_MASK)
+        >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    /**
+     * Checks to see if all of the preferences are set
+     * 
+     * @return if the required preferences are set
+     */
+    public boolean allPreferencesSet()
+    {
+        if ( isNamePreferenceSet() )
+        {
+            if ( isPhoneNumberPrefernceSet() )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

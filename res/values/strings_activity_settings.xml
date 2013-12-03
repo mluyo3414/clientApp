@@ -9,14 +9,18 @@
     <string name="pref_title_name">Display Name</string>
     <string name="pref_title_payment">Payment Method</string>
     <string name="pref_title_phone_number">Phone Number</string>
+    <string name="title_paypal_payment">PayPal</string>
+    <string name="title_payatpickup_payment">Pay at pick up</string>
+    
 
     <!-- Value String -->
-    <string name="pref_default_name">Insert Name</string>
-    <string name="pref_default_phone_number">None</string>
+    <string name="pref_default_name"></string>
+    <string name="pref_default_phone_number"></string>
 
     <string-array name="settings_array">
         <item>Name</item>
         <item>Phone Number</item>
+        <item>Payment Method</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->

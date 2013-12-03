@@ -76,6 +76,8 @@ public class OrderTabAsyncTask extends AsyncTask
      *            users name
      * @param total
      *            total cost of the order
+     * @param phoneNumber
+     *            the number of the user ordering
      * @return total
      */
     public String post( String order, String name, String total,
@@ -110,7 +112,8 @@ public class OrderTabAsyncTask extends AsyncTask
             nameValuePairs.add( new BasicNameValuePair( "total", total ) );
 
             // adds phone number
-            nameValuePairs.add( new BasicNameValuePair( "phone", phoneNumber ) );
+            nameValuePairs
+                    .add( new BasicNameValuePair( "phone", phoneNumber ) );
 
             post.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
 
