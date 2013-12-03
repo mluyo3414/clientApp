@@ -178,7 +178,6 @@ public class MainActivity extends TabActivity
             isServerOn();
             inputCorrect = false;
             initialSetup = false;
-
         }
     }
 

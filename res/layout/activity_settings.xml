@@ -3,6 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/activity_general_background"
     android:gravity="clip_vertical"
     android:orientation="vertical" >
 
@@ -12,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
-
     </ListView>
 
 </RelativeLayout>

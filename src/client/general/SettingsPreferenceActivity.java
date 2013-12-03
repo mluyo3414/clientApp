@@ -103,9 +103,8 @@ public class SettingsPreferenceActivity extends Activity
 
         initializeSettingsList();
 
-        // Makes sure a proper phone number is set
-        checkForValidPhoneNumber();
-        checkForValidName();
+        // Makes sure a proper phone number and name is set
+        checkForValidPreferences();
 
         if ( allPreferencesSet() && initialSetup )
         {
@@ -153,7 +152,8 @@ public class SettingsPreferenceActivity extends Activity
      * 
      * @param positionOfSettingToUpdate
      */
-    public void handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
+    public void
+            handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
     {
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
 
@@ -163,7 +163,8 @@ public class SettingsPreferenceActivity extends Activity
             View nameView =
                     li.inflate( R.layout.dialog_update_name_settings, null );
 
-            displayUpdateSettingsDialog( getString( R.string.pref_title_name ),
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_name ),
                     preference_.getString(
                             getString( R.string.pref_title_name ),
                             getString( R.string.pref_title_name ) ), nameView );
@@ -214,7 +215,8 @@ public class SettingsPreferenceActivity extends Activity
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
         View promptsView =
                 li.inflate( R.layout.dialog_update_payment_settings, null );
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( this );
+        AlertDialog.Builder alertDialogBuilder =
+                new AlertDialog.Builder( this );
 
         // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
@@ -223,31 +225,35 @@ public class SettingsPreferenceActivity extends Activity
         final RadioButton payPalRadioButton =
                 (RadioButton) promptsView.findViewById( R.id.paypalRadio );
 
-        payPalRadioButton.setChecked( getString( R.string.title_paypal_payment )
-                .contains( currentPaymentPreference ) );
+        payPalRadioButton
+                .setChecked( getString( R.string.title_paypal_payment )
+                        .contains( currentPaymentPreference ) );
 
         alertDialogBuilder
                 .setCancelable( false )
-                .setPositiveButton( "OK", new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface dialog, int id )
-                    {
-                        String newSettings;
-
-                        if ( payPalRadioButton.isChecked() )
+                .setPositiveButton( "OK",
+                        new DialogInterface.OnClickListener()
                         {
-                            newSettings =
-                                    getString( R.string.title_paypal_payment );
-                        }
-                        else
-                        {
-                            newSettings =
-                                    getString( R.string.title_payatpickup_payment );
-                        }
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                String newSettings;
 
-                        updatePreference( paymentPreferenceKey, newSettings );
-                    }
-                } )
+                                if ( payPalRadioButton.isChecked() )
+                                {
+                                    newSettings =
+                                            getString( R.string.title_paypal_payment );
+                                }
+                                else
+                                {
+                                    newSettings =
+                                            getString( R.string.title_payatpickup_payment );
+                                }
+
+                                updatePreference( paymentPreferenceKey,
+                                        newSettings );
+                            }
+                        } )
                 .setNegativeButton( "Cancel",
                         new DialogInterface.OnClickListener()
                         {
@@ -268,7 +274,7 @@ public class SettingsPreferenceActivity extends Activity
     /**
      * This function will create a dialog with the passed setting to be updated
      * and if it is updated then it will return the newly updated settings
-     * string
+     * string.
      * 
      * @param settingsToBeUpdated
      *            this is the string the dialog will list is being updated
@@ -277,10 +283,12 @@ public class SettingsPreferenceActivity extends Activity
      * @param promptsView
      *            dialog box
      */
-    private void displayUpdateSettingsDialog( final String settingsToBeUpdated,
+    private void displayUpdateSettingsDialog(
+            final String settingsToBeUpdated,
             String currentStringForTheSetting, View promptsView )
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( this );
+        AlertDialog.Builder alertDialogBuilder =
+                new AlertDialog.Builder( this );
 
         // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
@@ -300,42 +308,48 @@ public class SettingsPreferenceActivity extends Activity
         // set dialog message
         alertDialogBuilder
                 .setCancelable( false )
-                .setPositiveButton( "OK", new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface dialog, int id )
-                    {
-                        String newSettingsValue =
-                                result.getText().toString().trim();
-
-                        if ( !"".equals( newSettingsValue ) )
+                .setPositiveButton( "OK",
+                        new DialogInterface.OnClickListener()
                         {
-                            // phone number make sure it's length is 10
-                            // digits
-                            if ( settingsToBeUpdated
-                                    .contains( getString( R.string.pref_title_phone_number ) ) )
+                            public void
+                                    onClick( DialogInterface dialog, int id )
                             {
-                                if ( 10 > newSettingsValue.length() )
+                                String newSettingsValue =
+                                        result.getText().toString().trim();
+
+                                // Make sure a blank setting isn't entered
+                                if ( !"".equals( newSettingsValue ) )
                                 {
-                                    Toast.makeText(
-                                            getApplicationContext(),
-                                            "Please enter a 10 digit phone number with an area code the format: \n 0123456789 ",
-                                            Toast.LENGTH_LONG ).show();
-                                }
-                                else
-                                {
+                                    // phone number make sure it's length is 10
+                                    // digits
+                                    if ( settingsToBeUpdated
+                                            .contains( getString( R.string.pref_title_phone_number ) ) )
+                                    {
+                                        if ( 10 > newSettingsValue.length() )
+                                        {
+                                            Toast.makeText(
+                                                    getApplicationContext(),
+                                                    "Please enter a 10 digit phone number with an area code the format: 0123456789",
+                                                    Toast.LENGTH_LONG ).show();
+
+                                            return;
+                                        }
+                                    }
+
+                                    // Update the setting preference
                                     updatePreference( settingsToBeUpdated,
                                             newSettingsValue );
                                 }
+                                else
+                                {
+                                    Toast.makeText(
+                                            getApplicationContext(),
+                                            "Your " + settingsToBeUpdated
+                                                    + " cannot be blank.",
+                                            Toast.LENGTH_LONG ).show();
+                                }
                             }
-
-                            else
-                            {
-                                updatePreference( settingsToBeUpdated,
-                                        newSettingsValue );
-                            }
-                        }
-                    }
-                } )
+                        } )
                 .setNegativeButton( "Cancel",
                         new DialogInterface.OnClickListener()
                         {
@@ -449,26 +463,61 @@ public class SettingsPreferenceActivity extends Activity
                         getString( R.string.pref_title_name ) ) );
     }
 
-    private void checkForValidName()
+    /**
+     * Checks to see if there is a valid name entered, and raises a toast for
+     * the three possible cases:
+     * 
+     * First case: a name and a phone number needs to entered.
+     * 
+     * Second case: a name needs to be entered.
+     * 
+     * Third case: phone number needs to be entered.
+     * 
+     * @param validPhoneNumberExists
+     *            if this is true then a phone number needs to be entered
+     */
+    private void checkForValidNameAndMakeToast(
+            boolean validPhoneNumberExists )
     {
-
         if ( !isNamePreferenceSet() )
         {
-            Toast.makeText( getApplicationContext(),
-                    "Please enter a valid name.", Toast.LENGTH_SHORT ).show();
-
             handleUpdatePreferenceSelection( 0 );
+
+            // First case: a name and a phone number needs to entered.
+            if ( validPhoneNumberExists )
+            {
+                Toast.makeText( getApplicationContext(),
+                        "Please enter a valid name and phone number.",
+                        Toast.LENGTH_LONG )
+                        .show();
+            }
+            else
+            // Second case: a name needs to be entered.
+            {
+                Toast.makeText( getApplicationContext(),
+                        "Please enter a valid name.", Toast.LENGTH_LONG )
+                        .show();
+            }
+        }
+        // Third case: phone number needs to be entered.
+        else if ( validPhoneNumberExists )
+        {
+            Toast.makeText( getApplicationContext(),
+                    "Please enter a valid 10 digit phone number.",
+                    Toast.LENGTH_LONG )
+                    .show();
         }
     }
 
     /**
-     * Checks to make sure a valid phone number is entered, if it's not entered
-     * then it checks to see if the current device is a tablet. If it is a
-     * tablet then bring up the settings for the user to enter their phone
-     * number. Else it's a phone, so set the phone number preference to the
-     * device's phone number.
+     * Checks to make sure a valid phone number and name is entered. If a phone
+     * number is not entered then it checks to see if the current device is a
+     * tablet. If it is a tablet then bring up the settings for the user to
+     * enter their phone number. Else it's a phone, so set the phone number
+     * preference to the device's phone number. If the name is not set then
+     * bring up the name preference dialog
      */
-    private void checkForValidPhoneNumber()
+    private void checkForValidPreferences()
     {
         // Check to see if a phone number preference is saved other than the
         // default
@@ -477,12 +526,13 @@ public class SettingsPreferenceActivity extends Activity
             // If the current device is a tablet the
             if ( isTablet( this ) )
             {
-                // Tell the user they need to enter a valid phone number
-                Toast.makeText( getApplicationContext(),
-                        "Please enter a valid phone number.",
-                        Toast.LENGTH_SHORT ).show();
-
                 handleUpdatePreferenceSelection( 1 );
+
+                // Tell the user they need to enter a valid phone number and
+                // check to see if the user needs to enter a name as well
+                checkForValidNameAndMakeToast( true );
+
+                return;
             }
             else
             {
@@ -497,6 +547,9 @@ public class SettingsPreferenceActivity extends Activity
                         phoneNumber );
             }
         }
+
+        // Check to see if the user needs to enter a name
+        checkForValidNameAndMakeToast( false );
     }
 
     /**
