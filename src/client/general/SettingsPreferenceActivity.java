@@ -42,11 +42,21 @@ import com.example.foodnow.R;
  */
 public class SettingsPreferenceActivity extends Activity
 {
+    /**
+     * listview that displays the settings options
+     */
     private ListView settingsListView_;
 
-    // Common handles to the preference file
-    SharedPreferences preference_;
-    SharedPreferences.Editor preferenceEditor_;
+    /**
+     * Common handles to the preference file
+     */
+    private SharedPreferences preference_;
+    private SharedPreferences.Editor preferenceEditor_;
+
+    /**
+     * determines if the settings are being called for the first time
+     */
+    private static boolean initialSetup = true;
 
     /**
      * @return the name saved in the preferences
@@ -90,16 +100,15 @@ public class SettingsPreferenceActivity extends Activity
 
         initializeSettingsList();
 
-        // TODO: Hack
-        // updatePreference( getString( R.string.pref_default_phone_number ),
-        // getString( R.string.pref_default_phone_number ) );
-        // updatePreference( getString( R.string.pref_default_name ),
-        // getString( R.string.pref_default_name ) );
-
         // Makes sure a proper phone number is set
         checkForValidPhoneNumber();
-
         checkForValidName();
+
+        if ( allPreferencesSet() && initialSetup )
+        {
+            closeSettingsOnCreation();
+            initialSetup = false;
+        }
     }
 
     /**
@@ -141,8 +150,7 @@ public class SettingsPreferenceActivity extends Activity
      * 
      * @param positionOfSettingToUpdate
      */
-    public void
-            handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
+    public void handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
     {
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
 
@@ -152,8 +160,7 @@ public class SettingsPreferenceActivity extends Activity
             View nameView =
                     li.inflate( R.layout.dialog_update_name_settings, null );
 
-            displayUpdateSettingsDialog(
-                    getString( R.string.pref_title_name ),
+            displayUpdateSettingsDialog( getString( R.string.pref_title_name ),
                     preference_.getString(
                             getString( R.string.pref_title_name ),
                             getString( R.string.pref_title_name ) ), nameView );
@@ -202,8 +209,7 @@ public class SettingsPreferenceActivity extends Activity
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
         View promptsView =
                 li.inflate( R.layout.dialog_update_payment_settings, null );
-        AlertDialog.Builder alertDialogBuilder =
-                new AlertDialog.Builder( this );
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( this );
 
         // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
@@ -212,35 +218,31 @@ public class SettingsPreferenceActivity extends Activity
         final RadioButton payPalRadioButton =
                 (RadioButton) promptsView.findViewById( R.id.paypalRadio );
 
-        payPalRadioButton
-                .setChecked( getString( R.string.title_paypal_payment )
-                        .contains( currentStringForTheSetting ) );
+        payPalRadioButton.setChecked( getString( R.string.title_paypal_payment )
+                .contains( currentStringForTheSetting ) );
 
         alertDialogBuilder
                 .setCancelable( false )
-                .setPositiveButton( "OK",
-                        new DialogInterface.OnClickListener()
+                .setPositiveButton( "OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface dialog, int id )
+                    {
+                        String newSettings;
+
+                        if ( payPalRadioButton.isChecked() )
                         {
-                            public void
-                                    onClick( DialogInterface dialog, int id )
-                            {
-                                String newSettings;
+                            newSettings =
+                                    getString( R.string.title_paypal_payment );
+                        }
+                        else
+                        {
+                            newSettings =
+                                    getString( R.string.title_payatpickup_payment );
+                        }
 
-                                if ( payPalRadioButton.isChecked() )
-                                {
-                                    newSettings =
-                                            getString( R.string.title_paypal_payment );
-                                }
-                                else
-                                {
-                                    newSettings =
-                                            getString( R.string.title_payatpickup_payment );
-                                }
-
-                                updatePreference( settingsToBeUpdated,
-                                        newSettings );
-                            }
-                        } )
+                        updatePreference( settingsToBeUpdated, newSettings );
+                    }
+                } )
                 .setNegativeButton( "Cancel",
                         new DialogInterface.OnClickListener()
                         {
@@ -268,12 +270,10 @@ public class SettingsPreferenceActivity extends Activity
      * @param currentStringForTheSetting
      * @param promptsView
      */
-    private void displayUpdateSettingsDialog(
-            final String settingsToBeUpdated,
+    private void displayUpdateSettingsDialog( final String settingsToBeUpdated,
             String currentStringForTheSetting, View promptsView )
     {
-        AlertDialog.Builder alertDialogBuilder =
-                new AlertDialog.Builder( this );
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( this );
 
         // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
@@ -293,40 +293,42 @@ public class SettingsPreferenceActivity extends Activity
         // set dialog message
         alertDialogBuilder
                 .setCancelable( false )
-                .setPositiveButton( "OK",
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void
-                                    onClick( DialogInterface dialog, int id )
-                            {
-                                String newSettingsValue =
-                                        result.getText().toString().trim();
+                .setPositiveButton( "OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface dialog, int id )
+                    {
+                        String newSettingsValue =
+                                result.getText().toString().trim();
 
-                                if ( !"".equals( newSettingsValue ) )
+                        if ( !"".equals( newSettingsValue ) )
+                        {
+                            // phone number make sure it's length is 10
+                            // digits
+                            if ( settingsToBeUpdated
+                                    .contains( getString( R.string.pref_title_phone_number ) ) )
+                            {
+                                if ( 10 > newSettingsValue.length() )
                                 {
-                                    // TODO: If the setting to be updated is a
-                                    // phone number make sure it's length is 10
-                                    // digits
-                                    if ( settingsToBeUpdated
-                                            .contains( getString( R.string.pref_title_phone_number ) ) )
-                                    {
-                                        if ( 10 > newSettingsValue.length() )
-                                        {
-                                            Toast.makeText(
-                                                    getApplicationContext(),
-                                                    "Please enter a 10 digit phone number with an area code the format: \n 0123456789 ",
-                                                    Toast.LENGTH_LONG )
-                                                    .show();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        updatePreference( settingsToBeUpdated,
-                                                newSettingsValue );
-                                    }
+                                    Toast.makeText(
+                                            getApplicationContext(),
+                                            "Please enter a 10 digit phone number with an area code the format: \n 0123456789 ",
+                                            Toast.LENGTH_LONG ).show();
+                                }
+                                else
+                                {
+                                    updatePreference( settingsToBeUpdated,
+                                            newSettingsValue );
                                 }
                             }
-                        } )
+
+                            else
+                            {
+                                updatePreference( settingsToBeUpdated,
+                                        newSettingsValue );
+                            }
+                        }
+                    }
+                } )
                 .setNegativeButton( "Cancel",
                         new DialogInterface.OnClickListener()
                         {
@@ -365,6 +367,15 @@ public class SettingsPreferenceActivity extends Activity
                 getSharedPreferences( getString( R.string.pref_title_file ),
                         Context.MODE_PRIVATE );
 
+        closeSettingsOnCreation();
+    }
+
+    /**
+     * Closes the settings activity when the main activity first initializes it,
+     * if all of the required settings are value.
+     */
+    private void closeSettingsOnCreation()
+    {
         if ( allPreferencesSet() )
         {
             MainActivity.inputCorrect = true;
@@ -431,7 +442,6 @@ public class SettingsPreferenceActivity extends Activity
 
     private void checkForValidName()
     {
-        // TODO:
 
         if ( !isNamePreferenceSet() )
         {

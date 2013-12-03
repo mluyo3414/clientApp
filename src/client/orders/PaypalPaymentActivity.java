@@ -118,7 +118,6 @@ public class PaypalPaymentActivity extends Activity
                     }
                     this.finish();
 
-                    // TODO: send 'confirm' to your server for verification.
                     // see
                     // https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
                     // for more details.

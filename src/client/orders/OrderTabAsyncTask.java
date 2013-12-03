@@ -47,6 +47,13 @@ public class OrderTabAsyncTask extends AsyncTask
      */
     private static String orderNumber;
 
+    private static OrderTab orderTab;
+
+    public OrderTabAsyncTask( OrderTab newOrderTab )
+    {
+        orderTab = newOrderTab;
+    }
+
     @Override
     protected Object doInBackground( Object... arg0 )
     {
@@ -64,7 +71,18 @@ public class OrderTabAsyncTask extends AsyncTask
         this.post( order, name, total, phoneNumber, paymentMethod );
 
         OrderTab.nextStep = 2;
-        return null;
+
+        return paymentMethod;
+    }
+
+    @Override
+    protected void onPostExecute( Object result )
+    {
+        if ( !result.equals( "PayPal" ) )
+        {
+            orderTab.orderConfirmation();
+        }
+
     }
 
     /**
@@ -103,7 +121,7 @@ public class OrderTabAsyncTask extends AsyncTask
 
             // gets and adds date
             DateFormat dateFormatter =
-                    new SimpleDateFormat( "yyyy-MM-dd hh:mm:ss" );
+                    new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
             dateFormatter.setLenient( false );
             Date today = new Date();
             String s = dateFormatter.format( today );

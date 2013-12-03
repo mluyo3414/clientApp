@@ -40,7 +40,7 @@ public class MainActivity extends TabActivity
     ConnectAsync myActivity;
 
     public static boolean inputCorrect;
-    
+
     private static boolean initialSetup;
 
     // ////////////////////////////
@@ -196,14 +196,13 @@ public class MainActivity extends TabActivity
     @Override
     protected void onResume()
     {
-        // TODO Auto-generated method stub
         super.onResume();
         if ( inputCorrect && initialSetup )
         {
             isServerOn();
             inputCorrect = false;
             initialSetup = false;
-            
+
         }
     }
 

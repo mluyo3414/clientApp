@@ -36,7 +36,7 @@ import com.example.foodnow.R;
  *         has sucesfully completed their order.
  * 
  */
-@SuppressWarnings( { "unused", "unchecked" } )
+@SuppressWarnings( { "unused", "unchecked", "static-access" } )
 public class OrderTab extends ListActivity
 {
 
@@ -272,7 +272,7 @@ public class OrderTab extends ListActivity
                                 getString( R.string.pref_title_phone_number ),
                                 getString( R.string.pref_title_phone_number ) );
 
-        orderToServer = new OrderTabAsyncTask();
+        orderToServer = new OrderTabAsyncTask( this );
         orderToServer.execute( list.toString(), userName, total.toString(),
                 phoneNumber, paymentMethod );
     }
@@ -281,7 +281,7 @@ public class OrderTab extends ListActivity
      * confirms the order after payment has been received and order has been
      * sent to the server
      */
-    private void orderConfirmation()
+    public void orderConfirmation()
     {
         // get prompts.xml view
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
@@ -311,7 +311,6 @@ public class OrderTab extends ListActivity
             // after order completion resets the order
             public void onClick( DialogInterface arg0, int arg1 )
             {
-
                 list.clear();
                 total = 0.0;
                 adapter.notifyDataSetChanged();
