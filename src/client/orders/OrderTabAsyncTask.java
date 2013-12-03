@@ -70,8 +70,6 @@ public class OrderTabAsyncTask extends AsyncTask
 
         this.post( order, name, total, phoneNumber, paymentMethod );
 
-        OrderTab.nextStep = 2;
-
         return paymentMethod;
     }
 
@@ -93,6 +91,9 @@ public class OrderTabAsyncTask extends AsyncTask
      *            total cost of the order
      * @param phoneNumber
      *            the number of the user ordering
+     * @param paymentMethod
+     *            method of payment the customer is using
+     * 
      * @return total
      */
     public String post( String order, String name, String total,
