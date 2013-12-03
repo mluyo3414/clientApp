@@ -50,6 +50,11 @@ public class OrderTab extends ListActivity
      */
     private static OrderTabAsyncTask orderToServer;
 
+    /**
+     * instance of the settings task
+     */
+    private static SharedPreferences preference_;
+
     // ////////////////
     // layout items //
     // ///////////////
@@ -115,6 +120,10 @@ public class OrderTab extends ListActivity
         listView = (ListView) findViewById( R.id.list );
         numberOfItemsOnPlate = 0;
 
+        preference_ =
+                getSharedPreferences( getString( R.string.pref_title_file ),
+                        Context.MODE_PRIVATE );
+
         // sets up adapter
         list = new ArrayList<String>();
         adapter =
@@ -167,8 +176,21 @@ public class OrderTab extends ListActivity
                             public void
                                     onClick( DialogInterface arg0, int arg1 )
                             {
-                                OrderTab.this.sendToPaypal();
-                                OrderTab.this.sendToServer();
+                                String paymentMethod =
+                                        OrderTab.this.preference_
+                                                .getString(
+                                                        getString( R.string.pref_title_payment ),
+                                                        getString( R.string.pref_title_payment ) );
+
+                                if ( paymentMethod.equals( "PayPal" ) )
+                                {
+                                    OrderTab.this.sendToPaypal();
+                                }
+                                else
+                                {
+                                    OrderTab.nextStep = 1;
+                                }
+                                OrderTab.this.sendToServer( paymentMethod );
                             }
                         } );
 
@@ -211,16 +233,15 @@ public class OrderTab extends ListActivity
                 } );
 
         // set a negative/no button and create a listener
-        alertbox.setNegativeButton( "No",
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface arg0, int arg1 )
-                    {
-                        Toast.makeText( getApplicationContext(),
-                                "The item was NOT removed from your plate",
-                                Toast.LENGTH_SHORT ).show();
-                    }
-                } );
+        alertbox.setNegativeButton( "No", new DialogInterface.OnClickListener()
+        {
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
+                Toast.makeText( getApplicationContext(),
+                        "The item was NOT removed from your plate",
+                        Toast.LENGTH_SHORT ).show();
+            }
+        } );
 
         alertbox.show();
     }
@@ -239,22 +260,21 @@ public class OrderTab extends ListActivity
      * sends order and username to server after payment information has been
      * sent to paypal
      */
-    private void sendToServer()
+    private void sendToServer( String paymentMethod )
     {
-        SharedPreferences preference_ =
-                getSharedPreferences( getString( R.string.pref_title_file ),
-                        Context.MODE_PRIVATE );
         String userName =
                 preference_.getString( getString( R.string.pref_title_name ),
                         getString( R.string.pref_title_name ) );
 
-        String phoneNumber = "1" + preference_.getString( getString(
-                R.string.pref_title_phone_number ), getString(
-                R.string.pref_title_phone_number ) );
+        String phoneNumber =
+                "1"
+                        + preference_.getString(
+                                getString( R.string.pref_title_phone_number ),
+                                getString( R.string.pref_title_phone_number ) );
 
         orderToServer = new OrderTabAsyncTask();
         orderToServer.execute( list.toString(), userName, total.toString(),
-                phoneNumber );
+                phoneNumber, paymentMethod );
     }
 
     /**
@@ -282,26 +302,24 @@ public class OrderTab extends ListActivity
 
         final TextView orderNumberTextView;
         orderNumberTextView =
-                (TextView) promptsView
-                        .findViewById( R.id.confirmationTextView );
+                (TextView) promptsView.findViewById( R.id.confirmationTextView );
         orderNumberTextView.setText( "Order ID: "
                 + orderToServer.getOrderNumber() );
 
-        alertbox.setPositiveButton( "Ok",
-                new DialogInterface.OnClickListener()
-                {
-                    // after order completion resets the order
-                    public void onClick( DialogInterface arg0, int arg1 )
-                    {
+        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
+        {
+            // after order completion resets the order
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
 
-                        list.clear();
-                        total = 0.0;
-                        adapter.notifyDataSetChanged();
-                        footer.setText( "" );
-                        button.setEnabled( false );
-                        numberOfItemsOnPlate = 0;
-                    }
-                } );
+                list.clear();
+                total = 0.0;
+                adapter.notifyDataSetChanged();
+                footer.setText( "" );
+                button.setEnabled( false );
+                numberOfItemsOnPlate = 0;
+            }
+        } );
         alertbox.show();
     }
 

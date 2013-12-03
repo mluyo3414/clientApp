@@ -59,8 +59,9 @@ public class OrderTabAsyncTask extends AsyncTask
         String name = (String) arg0[1];
         String total = (String) arg0[2];
         String phoneNumber = (String) arg0[3];
+        String paymentMethod = (String) arg0[4];
 
-        this.post( order, name, total, phoneNumber );
+        this.post( order, name, total, phoneNumber, paymentMethod );
 
         OrderTab.nextStep = 2;
         return null;
@@ -81,7 +82,7 @@ public class OrderTabAsyncTask extends AsyncTask
      * @return total
      */
     public String post( String order, String name, String total,
-            String phoneNumber )
+            String phoneNumber, String paymentMethod )
     {
         // hard coded IP and port#
         String IPandPort = "172.31.172.58:8080";// 54.201.86.103:8080";
@@ -112,8 +113,11 @@ public class OrderTabAsyncTask extends AsyncTask
             nameValuePairs.add( new BasicNameValuePair( "total", total ) );
 
             // adds phone number
-            nameValuePairs
-                    .add( new BasicNameValuePair( "phone", phoneNumber ) );
+            nameValuePairs.add( new BasicNameValuePair( "phone", phoneNumber ) );
+
+            // adds payment method
+            nameValuePairs.add( new BasicNameValuePair( "paymentmethod",
+                    paymentMethod ) );
 
             post.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
 
