@@ -27,6 +27,18 @@ public class CustomList extends ArrayAdapter<String>
     private final String[] web;
     private final Integer[] imageId;
 
+    /**
+     * 
+     * sets the context and the string and image arrays to be displayed in the
+     * list
+     * 
+     * @param context
+     *            class the list will be displayed in
+     * @param web
+     *            array strings to be displayed in the list
+     * @param imageId
+     *            array images to be displayed in the list
+     */
     public CustomList( Activity context, String[] web, Integer[] imageId )
     {
         super( context, R.layout.list_single, web );

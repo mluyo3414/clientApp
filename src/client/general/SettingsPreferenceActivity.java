@@ -51,6 +51,9 @@ public class SettingsPreferenceActivity extends Activity
      * Common handles to the preference file
      */
     private SharedPreferences preference_;
+    /**
+     * Common handles to the preference editor
+     */
     private SharedPreferences.Editor preferenceEditor_;
 
     /**
@@ -199,11 +202,13 @@ public class SettingsPreferenceActivity extends Activity
      * if the payPalRadioButton is checked and updates the payment preference
      * accordingly.
      * 
-     * @param settingsToBeUpdated
-     * @param currentStringForTheSetting
+     * @param paymentPreferenceKey
+     *            name of the setting being updated
+     * @param currentPaymentPreference
+     *            current value of the preference
      */
-    private void displayPaymentDialog( final String settingsToBeUpdated,
-            String currentStringForTheSetting )
+    private void displayPaymentDialog( final String paymentPreferenceKey,
+            String currentPaymentPreference )
     {
         // get prompts.xml view
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
@@ -219,7 +224,7 @@ public class SettingsPreferenceActivity extends Activity
                 (RadioButton) promptsView.findViewById( R.id.paypalRadio );
 
         payPalRadioButton.setChecked( getString( R.string.title_paypal_payment )
-                .contains( currentStringForTheSetting ) );
+                .contains( currentPaymentPreference ) );
 
         alertDialogBuilder
                 .setCancelable( false )
@@ -240,7 +245,7 @@ public class SettingsPreferenceActivity extends Activity
                                     getString( R.string.title_payatpickup_payment );
                         }
 
-                        updatePreference( settingsToBeUpdated, newSettings );
+                        updatePreference( paymentPreferenceKey, newSettings );
                     }
                 } )
                 .setNegativeButton( "Cancel",
@@ -268,7 +273,9 @@ public class SettingsPreferenceActivity extends Activity
      * @param settingsToBeUpdated
      *            this is the string the dialog will list is being updated
      * @param currentStringForTheSetting
+     *            current value of the given setting
      * @param promptsView
+     *            dialog box
      */
     private void displayUpdateSettingsDialog( final String settingsToBeUpdated,
             String currentStringForTheSetting, View promptsView )
@@ -350,7 +357,9 @@ public class SettingsPreferenceActivity extends Activity
      * Updates the preference of the passed preference
      * 
      * @param preferenceToUpdate
+     *            name of the preference to be changed
      * @param newPreferenceValue
+     *            new value for the preference
      */
     public void updatePreference( String preferenceToUpdate,
             String newPreferenceValue )
@@ -492,6 +501,7 @@ public class SettingsPreferenceActivity extends Activity
 
     /**
      * @param context
+     *            context of the current device being used
      * @return if it's a tablet or not
      */
     public static boolean isTablet( Context context )

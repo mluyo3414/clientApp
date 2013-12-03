@@ -37,25 +37,19 @@ import com.example.foodnow.R;
 @SuppressWarnings( { "unused", "deprecation" } )
 public class MainActivity extends TabActivity
 {
-    ConnectAsync myActivity;
-
+    /**
+     * determines if the user preferences were entered correctly
+     */
     public static boolean inputCorrect;
 
+    /**
+     * determines if the app is in its initial setup
+     */
     private static boolean initialSetup;
-
-    // ////////////////////////////
-    // possibly unneeded
-
     /**
      * settings menu Intent
      */
     private Intent settingsIntention;
-    /**
-     * Instance to the settings activity
-     */
-    private SettingsPreferenceActivity settings_;
-
-    // ////////////////////////////
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -65,15 +59,11 @@ public class MainActivity extends TabActivity
 
         inputCorrect = false;
         initialSetup = true;
-        initializeSettingsActivity();
 
-        // createTabs();
-        // ////////////////////////////////
-        // possibly unneeded
-        // ///////////////////////////////
-        // initializeSettingsActivity();
-
-        // isServerOn();
+        SettingsPreferenceActivity settings_ = new SettingsPreferenceActivity();
+        settingsIntention =
+                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
+        MainActivity.this.startActivity( settingsIntention );
     }
 
     /**
@@ -88,7 +78,7 @@ public class MainActivity extends TabActivity
         try
         {
             // get values from Text edit
-            myActivity = new ConnectAsync( MainActivity.this );
+            ConnectAsync myActivity = new ConnectAsync( MainActivity.this );
 
             String IPandPort = "172.31.172.58:8080"; // 54.201.86.1032:8080"; //
             myActivity.execute( IPandPort );
@@ -108,9 +98,6 @@ public class MainActivity extends TabActivity
         return true;
     }
 
-    // ////////////////////////////////
-    // possibly unneeded
-    // ///////////////////////////////
     @Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
@@ -180,17 +167,6 @@ public class MainActivity extends TabActivity
             }
         } );
         alertbox.show();
-    }
-
-    // ////////////////////////////////
-    // possibly unneeded
-    // ///////////////////////////////
-    private void initializeSettingsActivity()
-    {
-        settings_ = new SettingsPreferenceActivity();
-        settingsIntention =
-                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
-        MainActivity.this.startActivity( settingsIntention );
     }
 
     @Override

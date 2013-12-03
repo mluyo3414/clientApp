@@ -354,10 +354,4 @@ public class OrderTab extends ListActivity
 
         removeItem();
     }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-    }
 }
