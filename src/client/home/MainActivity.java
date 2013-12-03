@@ -39,6 +39,10 @@ public class MainActivity extends TabActivity
 {
     ConnectAsync myActivity;
 
+    public static boolean inputCorrect;
+    
+    private static boolean initialSetup;
+
     // ////////////////////////////
     // possibly unneeded
 
@@ -59,8 +63,8 @@ public class MainActivity extends TabActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main_home );
 
-//        settings_ = new SettingsPreferenceActivity(this  );
-        settings_ = new SettingsPreferenceActivity(  );
+        inputCorrect = false;
+        initialSetup = true;
         initializeSettingsActivity();
 
         // createTabs();
@@ -168,14 +172,13 @@ public class MainActivity extends TabActivity
         // set the message to display
         alertbox.setMessage( "The server is currently not on, sorry for the inconvenience.\nPlease try again shortly." );
         // set a positive/yes button and create a listener
-        alertbox.setPositiveButton( "Ok",
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface arg0, int arg1 )
-                    {
-                        MainActivity.this.finish();
-                    }
-                } );
+        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
+        {
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
+                MainActivity.this.finish();
+            }
+        } );
         alertbox.show();
     }
 
@@ -184,10 +187,24 @@ public class MainActivity extends TabActivity
     // ///////////////////////////////
     private void initializeSettingsActivity()
     {
+        settings_ = new SettingsPreferenceActivity();
         settingsIntention =
-                new Intent( MainActivity.this,
-                        SettingsPreferenceActivity.class );
+                new Intent( MainActivity.this, SettingsPreferenceActivity.class );
         MainActivity.this.startActivity( settingsIntention );
+    }
+
+    @Override
+    protected void onResume()
+    {
+        // TODO Auto-generated method stub
+        super.onResume();
+        if ( inputCorrect && initialSetup )
+        {
+            isServerOn();
+            inputCorrect = false;
+            initialSetup = false;
+            
+        }
     }
 
 }
