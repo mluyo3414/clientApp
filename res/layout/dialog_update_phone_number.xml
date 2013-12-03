@@ -18,7 +18,10 @@
         android:id="@+id/editTextDialogUserInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="rg" >
+        android:hint="rg"
+        android:inputType="number"
+        android:maxLength="10"
+		>
 
         <requestFocus />
     </EditText>

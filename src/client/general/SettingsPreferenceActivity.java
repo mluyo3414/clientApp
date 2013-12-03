@@ -91,10 +91,10 @@ public class SettingsPreferenceActivity extends Activity
         initializeSettingsList();
 
         // TODO: Hack
-//        updatePreference( getString( R.string.pref_default_phone_number ),
-//                getString( R.string.pref_default_phone_number ) );
-//        updatePreference( getString( R.string.pref_default_name ),
-//                getString( R.string.pref_default_name ) );
+        // updatePreference( getString( R.string.pref_default_phone_number ),
+        // getString( R.string.pref_default_phone_number ) );
+        // updatePreference( getString( R.string.pref_default_name ),
+        // getString( R.string.pref_default_name ) );
 
         // Makes sure a proper phone number is set
         checkForValidPhoneNumber();
@@ -141,23 +141,36 @@ public class SettingsPreferenceActivity extends Activity
      * 
      * @param positionOfSettingToUpdate
      */
-    public void handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
+    public void
+            handleUpdatePreferenceSelection( int positionOfSettingToUpdate )
     {
+        LayoutInflater li = LayoutInflater.from( getBaseContext() );
+
         switch ( positionOfSettingToUpdate )
         {
         case 0: // The name preference
-            displayUpdateSettingsDialog( getString( R.string.pref_title_name ),
+            View nameView =
+                    li.inflate( R.layout.dialog_update_name_settings, null );
+
+            displayUpdateSettingsDialog(
+                    getString( R.string.pref_title_name ),
                     preference_.getString(
                             getString( R.string.pref_title_name ),
-                            getString( R.string.pref_title_name ) ) );
+                            getString( R.string.pref_title_name ) ), nameView );
             break;
 
         case 1: // The phone number preference
+
+            // get prompts.xml view
+            View phoneNumberView =
+                    li.inflate( R.layout.dialog_update_phone_number, null );
+
             displayUpdateSettingsDialog(
                     getString( R.string.pref_title_phone_number ),
                     preference_.getString(
                             getString( R.string.pref_title_phone_number ),
-                            getString( R.string.pref_title_phone_number ) ) );
+                            getString( R.string.pref_title_phone_number ) ),
+                    phoneNumberView );
             break;
 
         case 2: // The payment method preference
@@ -187,9 +200,10 @@ public class SettingsPreferenceActivity extends Activity
     {
         // get prompts.xml view
         LayoutInflater li = LayoutInflater.from( getBaseContext() );
-        View promptsView = li.inflate( R.layout.dialog_payment_settings, null );
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( this );
+        View promptsView =
+                li.inflate( R.layout.dialog_update_payment_settings, null );
+        AlertDialog.Builder alertDialogBuilder =
+                new AlertDialog.Builder( this );
 
         // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
@@ -198,31 +212,35 @@ public class SettingsPreferenceActivity extends Activity
         final RadioButton payPalRadioButton =
                 (RadioButton) promptsView.findViewById( R.id.paypalRadio );
 
-        payPalRadioButton.setChecked( getString( R.string.title_paypal_payment )
-                .contains( currentStringForTheSetting ) );
+        payPalRadioButton
+                .setChecked( getString( R.string.title_paypal_payment )
+                        .contains( currentStringForTheSetting ) );
 
         alertDialogBuilder
                 .setCancelable( false )
-                .setPositiveButton( "OK", new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface dialog, int id )
-                    {
-                        String newSettings;
-
-                        if ( payPalRadioButton.isChecked() )
+                .setPositiveButton( "OK",
+                        new DialogInterface.OnClickListener()
                         {
-                            newSettings =
-                                    getString( R.string.title_paypal_payment );
-                        }
-                        else
-                        {
-                            newSettings =
-                                    getString( R.string.title_payatpickup_payment );
-                        }
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                String newSettings;
 
-                        updatePreference( settingsToBeUpdated, newSettings );
-                    }
-                } )
+                                if ( payPalRadioButton.isChecked() )
+                                {
+                                    newSettings =
+                                            getString( R.string.title_paypal_payment );
+                                }
+                                else
+                                {
+                                    newSettings =
+                                            getString( R.string.title_payatpickup_payment );
+                                }
+
+                                updatePreference( settingsToBeUpdated,
+                                        newSettings );
+                            }
+                        } )
                 .setNegativeButton( "Cancel",
                         new DialogInterface.OnClickListener()
                         {
@@ -248,15 +266,14 @@ public class SettingsPreferenceActivity extends Activity
      * @param settingsToBeUpdated
      *            this is the string the dialog will list is being updated
      * @param currentStringForTheSetting
+     * @param promptsView
      */
-    private void displayUpdateSettingsDialog( final String settingsToBeUpdated,
-            String currentStringForTheSetting )
+    private void displayUpdateSettingsDialog(
+            final String settingsToBeUpdated,
+            String currentStringForTheSetting, View promptsView )
     {
-        // get prompts.xml view
-        LayoutInflater li = LayoutInflater.from( getBaseContext() );
-        View promptsView = li.inflate( R.layout.dialog_update_settings, null );
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( this );
+        AlertDialog.Builder alertDialogBuilder =
+                new AlertDialog.Builder( this );
 
         // set prompts.xml to alert dialog builder and sets the title
         alertDialogBuilder.setView( promptsView );
@@ -276,20 +293,40 @@ public class SettingsPreferenceActivity extends Activity
         // set dialog message
         alertDialogBuilder
                 .setCancelable( false )
-                .setPositiveButton( "OK", new DialogInterface.OnClickListener()
-                {
-                    public void onClick( DialogInterface dialog, int id )
-                    {
-                        String newSettingsValue =
-                                result.getText().toString().trim();
-
-                        if ( !"".equals( newSettingsValue ) )
+                .setPositiveButton( "OK",
+                        new DialogInterface.OnClickListener()
                         {
-                            updatePreference( settingsToBeUpdated,
-                                    newSettingsValue );
-                        }
-                    }
-                } )
+                            public void
+                                    onClick( DialogInterface dialog, int id )
+                            {
+                                String newSettingsValue =
+                                        result.getText().toString().trim();
+
+                                if ( !"".equals( newSettingsValue ) )
+                                {
+                                    // TODO: If the setting to be updated is a
+                                    // phone number make sure it's length is 10
+                                    // digits
+                                    if ( settingsToBeUpdated
+                                            .contains( getString( R.string.pref_title_phone_number ) ) )
+                                    {
+                                        if ( 10 > newSettingsValue.length() )
+                                        {
+                                            Toast.makeText(
+                                                    getApplicationContext(),
+                                                    "Please enter a 10 digit phone number with an area code the format: \n 0123456789 ",
+                                                    Toast.LENGTH_LONG )
+                                                    .show();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        updatePreference( settingsToBeUpdated,
+                                                newSettingsValue );
+                                    }
+                                }
+                            }
+                        } )
                 .setNegativeButton( "Cancel",
                         new DialogInterface.OnClickListener()
                         {
