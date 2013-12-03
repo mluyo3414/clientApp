@@ -78,11 +78,7 @@ public class OrderTabAsyncTask extends AsyncTask
     @Override
     protected void onPostExecute( Object result )
     {
-        if ( !result.equals( "PayPal" ) )
-        {
-            orderTab.orderConfirmation();
-        }
-
+        orderTab.orderConfirmation();
     }
 
     /**

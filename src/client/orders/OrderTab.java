@@ -317,6 +317,7 @@ public class OrderTab extends ListActivity
                 footer.setText( "" );
                 button.setEnabled( false );
                 numberOfItemsOnPlate = 0;
+                nextStep = 0;
             }
         } );
         alertbox.show();
@@ -358,11 +359,5 @@ public class OrderTab extends ListActivity
     protected void onResume()
     {
         super.onResume();
-
-        if ( nextStep == 2 )
-        {
-            orderConfirmation();
-            nextStep = 0;
-        }
     }
 }

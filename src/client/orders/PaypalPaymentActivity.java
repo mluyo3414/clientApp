@@ -113,9 +113,6 @@ public class PaypalPaymentActivity extends Activity
                             .toString( 4 ) );
 
                     OrderTab.nextStep = 1;
-                    while ( OrderTab.nextStep != 2 )
-                    {
-                    }
                     this.finish();
 
                     // see
