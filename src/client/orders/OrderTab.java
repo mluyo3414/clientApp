@@ -232,15 +232,16 @@ public class OrderTab extends ListActivity
                 } );
 
         // set a negative/no button and create a listener
-        alertbox.setNegativeButton( "No", new DialogInterface.OnClickListener()
-        {
-            public void onClick( DialogInterface arg0, int arg1 )
-            {
-                Toast.makeText( getApplicationContext(),
-                        "The item was NOT removed from your plate",
-                        Toast.LENGTH_SHORT ).show();
-            }
-        } );
+        alertbox.setNegativeButton( "No",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface arg0, int arg1 )
+                    {
+                        Toast.makeText( getApplicationContext(),
+                                "The item was NOT removed from your plate",
+                                Toast.LENGTH_SHORT ).show();
+                    }
+                } );
 
         alertbox.show();
     }
@@ -301,24 +302,26 @@ public class OrderTab extends ListActivity
 
         final TextView orderNumberTextView;
         orderNumberTextView =
-                (TextView) promptsView.findViewById( R.id.confirmationTextView );
+                (TextView) promptsView
+                        .findViewById( R.id.confirmationTextView );
         orderNumberTextView.setText( "Order ID: "
                 + orderToServer.getOrderNumber() );
 
-        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
-        {
-            // after order completion resets the order
-            public void onClick( DialogInterface arg0, int arg1 )
-            {
-                list.clear();
-                total = 0.0;
-                adapter.notifyDataSetChanged();
-                footer.setText( "" );
-                button.setEnabled( false );
-                numberOfItemsOnPlate = 0;
-                nextStep = 0;
-            }
-        } );
+        alertbox.setPositiveButton( "Ok",
+                new DialogInterface.OnClickListener()
+                {
+                    // after order completion resets the order
+                    public void onClick( DialogInterface arg0, int arg1 )
+                    {
+                        list.clear();
+                        total = 0.0;
+                        adapter.notifyDataSetChanged();
+                        footer.setText( "" );
+                        button.setEnabled( false );
+                        numberOfItemsOnPlate = 0;
+                        nextStep = 0;
+                    }
+                } );
         alertbox.show();
     }
 
@@ -327,18 +330,34 @@ public class OrderTab extends ListActivity
      */
     public void orderFailed()
     {
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from( getBaseContext() );
+        View promptsView = li.inflate( R.layout.dialog_order_failed, null );
+
         // prepare the alert box
-        alertbox = new AlertDialog.Builder( OrderTab.this );
-        // set the message to display
-        alertbox.setMessage( "Your order did not go through.\nSorry for the inconvenience." );
+        AlertDialog.Builder alertbox = new AlertDialog.Builder( OrderTab.this );
+
+        alertbox.setView( promptsView );
+        alertbox.setTitle( "Order Failed" );
+
+        // Display text prompting the user that the order failed
+        final TextView confirmationTextView;
+        confirmationTextView =
+                (TextView) promptsView
+                        .findViewById( R.id.orderFailedTextView );
+        confirmationTextView
+                .setText( "Your order did not go through.\nSorry for the inconvenience." );
+
         // set a positive/yes button and create a listener
-        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
-        {
-            public void onClick( DialogInterface arg0, int arg1 )
-            {
-                nextStep = 0;
-            }
-        } );
+        alertbox.setPositiveButton( "Ok",
+                new DialogInterface.OnClickListener()
+                {
+                    // after order completion resets the order
+                    public void onClick( DialogInterface arg0, int arg1 )
+                    {
+                        nextStep = 0;
+                    }
+                } );
         alertbox.show();
     }
 
