@@ -1,7 +1,9 @@
 package client.home;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import client.general.ConnectAsync;
@@ -50,6 +53,8 @@ public class MainActivity extends TabActivity
      * settings menu Intent
      */
     private Intent settingsIntention;
+
+    private static TabHost tabHost;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -117,7 +122,7 @@ public class MainActivity extends TabActivity
      */
     public void createTabs()
     {
-        TabHost tabHost = getTabHost();
+        tabHost = getTabHost();
 
         // Home tab
         Intent intentHome = new Intent().setClass( this, HomeTab.class );
@@ -182,4 +187,10 @@ public class MainActivity extends TabActivity
         }
     }
 
+    @Override
+    protected void onRestart()
+    {
+        // TODO Auto-generated method stub
+        super.onRestart();
+    }
 }

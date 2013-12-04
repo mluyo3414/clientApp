@@ -570,4 +570,14 @@ public class SettingsPreferenceActivity extends Activity
 
         return false;
     }
+
+    /**
+     * * Disables the back button for the Order activity to prevent admin from
+     * going * back to previous order listing.
+     */
+    @Override
+    public void onBackPressed()
+    {
+        closeSettingsOnCreation();
+    }
 }
