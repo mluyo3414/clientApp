@@ -73,12 +73,6 @@ public class OrderTabAsyncTask extends AsyncTask
         return paymentMethod;
     }
 
-    @Override
-    protected void onPostExecute( Object result )
-    {
-        orderTab.orderConfirmation();
-    }
-
     /**
      * posts the order, users name, and total cost on the server and receives a
      * order number in return
@@ -100,7 +94,7 @@ public class OrderTabAsyncTask extends AsyncTask
             String phoneNumber, String paymentMethod )
     {
         // hard coded IP and port#
-        String IPandPort = "172.31.172.58:8080";// 54.201.86.103:8080";
+        String IPandPort = "54.201.86.103:8080"; // 172.31.172.58:8080";//
 
         // posting to server
         HttpClient client = new DefaultHttpClient();
@@ -161,9 +155,23 @@ public class OrderTabAsyncTask extends AsyncTask
         {
             data = "ERROR FROM SERVER";
             e.printStackTrace();
+            orderNumber = "";
         }
         return data;
 
+    }
+
+    @Override
+    protected void onPostExecute( Object result )
+    {
+        if ( orderNumber.equals( "" ) )
+        {
+            orderTab.orderFailed();
+        }
+        else
+        {
+            orderTab.orderConfirmation();
+        }
     }
 
     /**

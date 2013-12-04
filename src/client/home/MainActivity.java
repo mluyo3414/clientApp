@@ -80,7 +80,8 @@ public class MainActivity extends TabActivity
             // get values from Text edit
             ConnectAsync myActivity = new ConnectAsync( MainActivity.this );
 
-            String IPandPort = "172.31.172.58:8080"; // 54.201.86.1032:8080"; //
+            String IPandPort = "54.201.86.103:8080"; // 172.31.172.58:8080"; //
+
             myActivity.execute( IPandPort );
         }
         catch ( Exception ex )

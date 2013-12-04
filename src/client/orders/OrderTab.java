@@ -132,7 +132,6 @@ public class OrderTab extends ListActivity
         setListAdapter( adapter );
 
         onConfirmClick();
-
     }
 
     /**
@@ -317,6 +316,26 @@ public class OrderTab extends ListActivity
                 footer.setText( "" );
                 button.setEnabled( false );
                 numberOfItemsOnPlate = 0;
+                nextStep = 0;
+            }
+        } );
+        alertbox.show();
+    }
+
+    /**
+     * Lets the user know there order was not confirmed
+     */
+    public void orderFailed()
+    {
+        // prepare the alert box
+        alertbox = new AlertDialog.Builder( OrderTab.this );
+        // set the message to display
+        alertbox.setMessage( "Your order did not go through.\nSorry for the inconvenience." );
+        // set a positive/yes button and create a listener
+        alertbox.setPositiveButton( "Ok", new DialogInterface.OnClickListener()
+        {
+            public void onClick( DialogInterface arg0, int arg1 )
+            {
                 nextStep = 0;
             }
         } );
