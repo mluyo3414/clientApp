@@ -1,9 +1,9 @@
 clientApp
 =========
 
-James Dagres
-Miguel Suarez 
-Matt Luckam
+James Dagres,
+Miguel Suarez,
+Matt Luckam, and
 Carl Barbee
 
 DESCRIPTION:
